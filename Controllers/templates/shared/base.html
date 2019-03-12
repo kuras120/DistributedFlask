@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>{% block title %}{% endblock %} - template</title>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main-styles.css') }}">
+        <!--favicon-->
+        <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    </head>
+    <body class="d-flex flex-column">
+        <!-- Modal -->
+        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="loginModalTitle">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="{{ url_for('home_controller.login_process') }}" method="POST">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="email">Email address</label>
+                                <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" required>
+                                <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+                            </div>
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="rememberMe">
+                                <label class="form-check-label" for="rememberMe">Remember me</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-secondary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {# TODO Widok navbara zalezny od stanu aplikacji (zalogowany/niezalogwany) #}
+        <!-- NAVBAR DESKTOP/TABLET -->
+        <nav class="navbar d-none d-md-flex fixed-top navbar-expand-md navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{ url_for('home_controller.index')}}">LOGO</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarText">
+                    <ul class="navbar-nav ml-auto">
+                        {% if session['auth_token'] %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ '/account' }}">LOGGED AS {{ session['username'] }}</a>
+                            </li>
+                            <li class="nav-item active">
+                                <a class="nav-link" href="{{ '/logout' }}">SIGN OUT<span class="sr-only">(current)</span></a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#" data-toggle="modal" data-target="#loginModal"> <span>SIGN UP / SIGN IN</span> <span class="sr-only">(current)</span></a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            <div id="button-start" class="d-none d-md-flex align-items-center justify-content-center h-100" >
+                LET'S START!
+            </div>
+        </nav>
+        <!-- NAVBAR MOBILE -->
+        <nav class="navbar d-md-none fixed-top navbar-light bg-light">
+            <div id="button-mobile" class="container-fluid d-flex justify-content-center h-100" data-toggle="modal" data-target="#loginModal">
+                <h5>TAP TO START</h5>
+            </div>
+        </nav>
+        <!-- CONTENT -->
+        <div class="container-fluid d-flex flex-column flex-grow-1">
+            {% block content %}{% endblock %}
+        </div>
+        <!-- FOOTER -->
+        <footer class="pt-4">
+            <div class="container-fluid text-center text-md-left">
+                <div class="row">
+                    <div class="col-md-6 mt-md-0 mt-3">
+                        <h5 class="text-uppercase">Footer Content</h5>
+                        <p>Here you can use rows and columns here to organize your footer content.</p>
+                    </div>
+                    <hr class="clearfix w-100 d-md-none pb-3" />
+                    <div class="col-md-3 mb-md-0 mb-3">
+                        <h5 class="text-uppercase">Links</h5>
+                        <ul class="list-unstyled">
+                            <li>
+                                <a href="#">Link 1</a>
+                            </li>
+                            <li>
+                                <a href="#">Link 2</a>
+                            </li>
+                            <li class="d-none d-md-flex">
+                                <a href="#">Link 3</a>
+                            </li>
+                            <li class="d-none d-md-flex">
+                                <a href="#">Link 4</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 mb-md-0 mb-3">
+                        <h5 class="text-uppercase">Links</h5>
+                        <ul class="list-unstyled">
+                            <li>
+                                <a href="#">Link 1</a>
+                            </li>
+                            <li>
+                                <a href="#">Link 2</a>
+                            </li>
+                            <li class="d-none d-md-flex">
+                                <a href="#">Link 3</a>
+                            </li>
+                            <li class="d-none d-md-flex">
+                                <a href="#">Link 4</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="text-center py-3 w-100" style="background-color: #4169E1;">© {{ year }} Copyright:
+                        <a class="p-1" href="https://wojciechkur.azurewebsites.net"> Wojciech Kur</a>
+                    </div>
+                </div>
+            </div>
+      </footer>
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+
+
+        <!-- Optional JavaScript -->
+        <script src="../static/javascript/MainPageFunctions.js"></script>
+    </body>
+</html>
