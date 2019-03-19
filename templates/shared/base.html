@@ -49,7 +49,6 @@
                 </div>
             </div>
         </div>
-        {# TODO Widok navbara zalezny od stanu aplikacji (zalogowany/niezalogwany) #}
         <!-- NAVBAR DESKTOP/TABLET -->
         <nav class="navbar d-none d-md-flex fixed-top navbar-expand-md navbar-light bg-light">
             <div class="container-fluid">
@@ -61,10 +60,10 @@
                     <ul class="navbar-nav ml-auto">
                         {% if session['auth_token'] %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ '/account' }}">LOGGED AS {{ session['username'] }}</a>
+                                <a class="nav-link" href="{{ url_for('user_controller.index') }}">LOGGED AS {{ user }}</a>
                             </li>
                             <li class="nav-item active">
-                                <a class="nav-link" href="{{ '/logout' }}">SIGN OUT<span class="sr-only">(current)</span></a>
+                                <a class="nav-link" href="{{ url_for('user_controller.logout')}}">SIGN OUT<span class="sr-only">(current)</span></a>
                             </li>
                         {% else %}
                             <li class="nav-item active">
