@@ -8,7 +8,7 @@ class Authentication:
     def encode_auth_token(secret_key, user_id):
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, minutes=15),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, hours=0, minutes=15, seconds=0),
                 'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }
@@ -26,6 +26,6 @@ class Authentication:
             payload = jwt.decode(auth_token, secret_key)
             return payload['sub']
         except jwt.ExpiredSignatureError:
-            return 'Signature expired. Please log in again.'
+            raise Exception('Signature expired. Please log in again.')
         except jwt.InvalidTokenError:
-            return 'Invalid token. Please log in again.'
+            raise Exception('Invalid token. Please log in again.')

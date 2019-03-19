@@ -3,6 +3,9 @@ body {
     padding-top: 80px;
 }
 
+.alert {
+    margin: 0 !important;
+}
 /* NAVIGATION */
 .navbar {
     height: 80px;

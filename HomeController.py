@@ -1,6 +1,5 @@
 import datetime
 import logging
-import traceback
 
 from flask import Blueprint, render_template, jsonify, request, session, redirect, url_for, current_app
 
@@ -19,17 +18,23 @@ data = PropertiesReader('static/dictionary/feedback_index.properties')
 likes_counter = Counter(990)
 
 
-@home_controller.route('/')
-def index():
+@home_controller.route('/', defaults={'error': None})
+@home_controller.route('/<error>')
+def index(error):
     current_date = datetime.datetime.now().date().strftime('%B %d, %Y')
     number = Format.human_format(likes_counter.get())
     complete_data = data.read('key1')
     current_year = datetime.datetime.now().year.__str__()
     login = None
     if 'auth_token' in session:
-        login = UserManager.get_user(current_app.config['SECRET_KEY'], session['auth_token']).login
+        try:
+            login = UserManager.get_user(current_app.config['SECRET_KEY'], session['auth_token']).login
+        except Exception as e:
+            session.pop('auth_token', None)
+            return redirect(url_for('home_controller.index', error=e))
+
     return render_template('index.html', date=current_date, likes=number, question_data=complete_data,
-                           year=current_year, user=login)
+                           year=current_year, user=login, error=error)
 
 
 @home_controller.route('/add_like', methods=['POST'])
@@ -48,8 +53,4 @@ def login_process():
         session['auth_token'] = Authentication.encode_auth_token(current_app.config['SECRET_KEY'], user.id)
         return redirect(url_for('user_controller.index'))
     except Exception as e:
-        tb = traceback.format_exc()
-        error_logger.error(tb.__str__())
-        logger.error(e.__str__())
-        return render_template('error.html', error='Incorrect login data.')
-
+        return redirect(url_for('home_controller.index', error=e))

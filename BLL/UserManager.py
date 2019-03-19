@@ -35,5 +35,8 @@ class UserManager:
 
     @staticmethod
     def get_user(secret_key, token):
-        user_id = Authentication.decode_auth_token(secret_key, token)
-        return db_session.query(User).filter(User.id == user_id).first()
+        try:
+            user_id = Authentication.decode_auth_token(secret_key, token)
+            return db_session.query(User).filter(User.id == user_id).first()
+        except Exception as e:
+            raise Exception(e)

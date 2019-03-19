@@ -13,9 +13,13 @@ user_controller = Blueprint('user_controller', __name__)
 @user_controller.route('/')
 def index():
     if 'auth_token' in session:
-        login = UserManager.get_user(current_app.config['SECRET_KEY'], session['auth_token']).login
-        return render_template('userPanel.html', user=login)
-    return render_template('error.html', error='You have to log in first.')
+        try:
+            login = UserManager.get_user(current_app.config['SECRET_KEY'], session['auth_token']).login
+            return render_template('userPanel.html', user=login)
+        except Exception as e:
+            session.pop('auth_token', None)
+            return redirect(url_for('home_controller.index', error=e))
+    return redirect(url_for('home_controller.index', error='You have to log in first.'))
 
 
 @user_controller.route('/logout')
