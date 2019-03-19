@@ -6,7 +6,7 @@
         <meta name="viewport"
               content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>{% block title %}{% endblock %} - template</title>
+        <title>{% block title %}{% endblock %} - ¯\_(ツ)_/¯</title>
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
@@ -17,11 +17,12 @@
     </head>
     <body class="d-flex flex-column">
         <!-- Modal -->
+        <!-- logowanie -->
         <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="loginModalTitle">Modal title</h5>
+                        <h5 class="modal-title" id="loginModalTitle">Sing in to ¯\_(ツ)_/¯</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
@@ -30,8 +31,7 @@
                         <div class="modal-body">
                             <div class="form-group">
                                 <label for="email">Email address</label>
-                                <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" required>
-                                <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+                                <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="ex. admin@gmail.com" required>
                             </div>
                             <div class="form-group">
                                 <label for="password">Password</label>
@@ -49,6 +49,40 @@
                 </div>
             </div>
         </div>
+        <!-- rejestracja -->
+        <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="registerModalTitle">Sing up to ¯\_(ツ)_/¯</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="" method="POST"> <!-- tu bedzie url do rejestracji -->
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="email">Email address</label>
+                                <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Email" required>
+                                <small class="form-text text-muted">Your Email will be used as Your login</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Confirm Password</label>
+                                <input type="password" name="password" class="form-control" id="conf_password" placeholder="Confirm Password" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-secondary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- error -->
         {% if error %}
         <div class="alert alert-warning text-center" role="alert">
         {{ error }}
@@ -57,7 +91,7 @@
         <!-- NAVBAR DESKTOP/TABLET -->
         <nav class="navbar d-none d-md-flex fixed-top navbar-expand-md navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="{{ url_for('home_controller.index')}}">LOGO</a>
+                <a class="navbar-brand" href="{{ url_for('home_controller.index')}}">¯\_(ツ)_/¯</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -72,14 +106,14 @@
                             </li>
                         {% else %}
                             <li class="nav-item active">
-                                <a class="nav-link" href="#" data-toggle="modal" data-target="#loginModal"> <span>SIGN UP / SIGN IN</span> <span class="sr-only">(current)</span></a>
+                                <a class="nav-link" href="#" data-toggle="modal" data-target="#loginModal"> <span>SIGN IN</span> <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#" data-toggle="modal" data-target="#registerModal"> <span>SIGN UP</span> <span class="sr-only">(current)</span></a>
                             </li>
                         {% endif %}
                     </ul>
                 </div>
-            </div>
-            <div id="button-start" class="d-none d-md-flex align-items-center justify-content-center h-100" >
-                LET'S START!
             </div>
         </nav>
         <!-- NAVBAR MOBILE -->
@@ -92,57 +126,16 @@
         <div class="container-fluid d-flex flex-column flex-grow-1">
             {% block content %}{% endblock %}
         </div>
+
         <!-- FOOTER -->
-        <footer class="pt-4">
+        <footer>
             <div class="container-fluid text-center text-md-left">
-                <div class="row">
-                    <div class="col-md-6 mt-md-0 mt-3">
-                        <h5 class="text-uppercase">Footer Content</h5>
-                        <p>Here you can use rows and columns here to organize your footer content.</p>
-                    </div>
-                    <hr class="clearfix w-100 d-md-none pb-3" />
-                    <div class="col-md-3 mb-md-0 mb-3">
-                        <h5 class="text-uppercase">Links</h5>
-                        <ul class="list-unstyled">
-                            <li>
-                                <a href="#">Link 1</a>
-                            </li>
-                            <li>
-                                <a href="#">Link 2</a>
-                            </li>
-                            <li class="d-none d-md-flex">
-                                <a href="#">Link 3</a>
-                            </li>
-                            <li class="d-none d-md-flex">
-                                <a href="#">Link 4</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-3 mb-md-0 mb-3">
-                        <h5 class="text-uppercase">Links</h5>
-                        <ul class="list-unstyled">
-                            <li>
-                                <a href="#">Link 1</a>
-                            </li>
-                            <li>
-                                <a href="#">Link 2</a>
-                            </li>
-                            <li class="d-none d-md-flex">
-                                <a href="#">Link 3</a>
-                            </li>
-                            <li class="d-none d-md-flex">
-                                <a href="#">Link 4</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="text-center py-3 w-100" style="background-color: #4169E1;">© {{ year }} Copyright:
-                        <a class="p-1" href="https://wojciechkur.azurewebsites.net"> Wojciech Kur</a>
-                    </div>
+                <div class="text-center py-3 w-100" style="background-color: rgb(29, 29, 29);">© {{ year }} Copyright:
+                    <a class="p-1" href="https://wojciechkur.azurewebsites.net"> Wojciech Kur</a>
                 </div>
             </div>
-      </footer>
+        </footer>
+
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
