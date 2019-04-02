@@ -17,7 +17,7 @@ class Authentication:
             return jwt.encode(
                 payload,
                 secret_key,
-                algorithm='HS256'
+                algorithm='HS512'
             )
         except Exception as e:
             logging.getLogger('error_logger').exception(e)

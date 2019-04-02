@@ -2,7 +2,9 @@ import hashlib
 import logging
 
 from ORM.User import User
-from ORM.DbConfig import db_session, update, delete
+from ORM.DbConfig import db_session
+
+from sqlalchemy import update, delete
 
 from Utilities.CustomExceptions import UserException, DatabaseException
 
@@ -32,7 +34,7 @@ class UserManager:
             logging.getLogger('error_logger').exception(e)
             raise DatabaseException()
         if user:
-            hash_password = hashlib.sha512(password.encode('utf-8') + user.salt.encode('utf-8')).hexdigest()
+            hash_password = hashlib.sha3_512(password.encode('utf-8') + user.salt.encode('utf-8')).hexdigest()
             if user.hashed_password == hash_password:
                 logging.getLogger('logger').info('User ' + user.login + ' was found.')
                 return user
@@ -46,7 +48,7 @@ class UserManager:
     @staticmethod
     def update_user(user):
         try:
-            hash_password = hashlib.sha512(user.hashed_password.encode('utf-8') + user.salt.encode('utf-8')).hexdigest()
+            hash_password = hashlib.sha3_512(user.hashed_password.encode('utf-8') + user.salt.encode('utf-8')).hexdigest()
             update(User).where(User.id == user.id).values(login=user.login, hashed_password=hash_password)
         except Exception as e:
             logging.getLogger('error_logger').exception(e)
