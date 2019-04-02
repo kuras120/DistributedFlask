@@ -17,66 +17,19 @@
             <div class="row h-25 align-items-start">
                 <div class="col-md-8 offset-md-2">
                     <h3 class="d-flex justify-content-center font-weight-bold" style="color: royalblue;">
-                        Welcome in custom template!
+                        Welcome in RayTracing animation generator
                     </h3>
                     <h6 class="d-flex justify-content-center font-weight-bold" style="color: cornflowerblue;">
-                        It's simply boosted by python flask technology.
+                        Here are the tools which we have used to build this app. Avoid them.
                     </h6>
                     <div class="d-flex justify-content-center">
                         <img class="m-1" src="{{ url_for('static',filename='images/flask_logo.png') }}" alt="Flask">
                         <img class="m-1" src="{{ url_for('static',filename='images/python_logo.png') }}" alt="Python">
                         <img class="m-1" src="{{ url_for('static',filename='images/elixir_logo1.png') }}" alt="Elixir">
+                        <span class="font-weight-bold" style="color: royalblue;">What the hell is elixir?</span>
                     </div>
                 </div>
             </div>
-            <div class="row h-25 align-items-end">
-                <div class="col-md-3">
-                    <h6 class="d-flex justify-content-start">placeholder</h6>
-                </div>
-                <div class="col-md-3 offset-md-6">
-                    <h6 class="d-flex justify-content-end">placeholder</h6>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="sub-menu" class="row">
-        <ul class="col-12 list-inline d-flex align-items-center justify-content-center">
-          <li class="list-inline-item"><h4><a href="#">Register</a></h4></li>
-            <li class="list-inline-item"><h4><a href="#">Create</a></h4></li>
-            <li class="list-inline-item"><h4><a href="#">View</a></h4></li>
-        </ul>
-    </div>
-    <div class="flex-grow-1 row">
-        <div id="internal-survey"
-             class="col-12 py-lg-5 d-flex align-items-center justify-content-center">
-            <ul class="list-group list-group-flush">
-                {% for item in question_data %}
-                <li class="list-group-item">
-                    <ul class="list-inline">
-                        <li class="list-inline-item">
-                            <div class="d-block font-weight-bold text-justify">
-                                <h5>{{ item[0] }}</h5>
-                            </div>
-                        </li>
-                        <li class="list-inline-item">
-                            <div class="btn-group btn-group-toggle d-block" data-toggle="buttons">
-                                {% for elem in item[1] %}
-                                    {% if loop.index == 1 %}
-                                    <label class="btn btn-secondary">
-                                        <input type="radio" name="options" autocomplete="off"> {{ elem }}
-                                    </label>
-                                    {% else %}
-                                    <label class="btn btn-secondary">
-                                        <input type="radio" name="options" autocomplete="off"> {{ elem }}
-                                    </label>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </li>
-                    </ul>
-                </li>
-                {% endfor %}
-            </ul>
         </div>
     </div>
 {% endblock %}

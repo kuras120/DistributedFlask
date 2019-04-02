@@ -1,5 +1,19 @@
 {% extends 'shared/base.html' %}
 {% block title %}Account{% endblock %}
 {% block content %}
-    You're logged as {{ user }}
+    <div class="row h-25 align-items-start">
+        <div class="col-md-8 offset-md-2">
+            <h3 class="d-flex justify-content-center font-weight-bold" style="color: white;">
+                Hello, {{ user }}
+            </h3>
+        </div>
+    </div>
+
+    <div id="sub-menu" class="row">
+        <ul class="col-12 list-inline d-flex align-items-center justify-content-center">
+            <li><h4><a href="#" class="li-options">Schedule task</a></h4></li>
+            <li><h4><a href="#" class="li-options">View Your tasks</a></h4></li>
+            <li><h4><a href="#" class="li-options">View</a></h4></li>
+        </ul>
+    </div>
 {% endblock %}
