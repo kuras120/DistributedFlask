@@ -9,7 +9,7 @@ from Utilities.CustomExceptions import UserException, DatabaseException
 
 class UserManager:
     @staticmethod
-    def add_user(login, password):
+    def create_user(login, password):
         try:
             if not db_session.query(User).filter(User.login == login).first():
                 new_user = User(login=login, password=password)

@@ -40,8 +40,8 @@ def init_config():
     logging.getLogger('logger').info('Db initialized.')
 
     try:
-        UserManager.add_user('admin@gmail.com', 'admin1')
-        UserManager.add_user('user@gmail.com', 'user1')
+        UserManager.create_user('admin@gmail.com', 'admin1')
+        UserManager.create_user('user@gmail.com', 'user1')
         print('Test accounts added.')
     except Exception as e:
         print('Error: ' + e.__str__())

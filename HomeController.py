@@ -43,7 +43,7 @@ def add_like():
     return jsonify(number)
 
 
-@home_controller.route('/account', methods=['POST'])
+@home_controller.route('/login_process', methods=['POST'])
 def login_process():
     try:
         user = UserManager.read_user(request.form['email'], request.form['password'])
@@ -51,3 +51,16 @@ def login_process():
         return redirect(url_for('user_controller.index'))
     except Exception as e:
         return redirect(url_for('home_controller.index', error=e))
+
+
+@home_controller.route('/register_process', methods=['POST'])
+def register_process():
+    if request.form['password'] == request.form['conf_password']:
+        try:
+            user = UserManager.create_user(request.form['email'], request.form['password'])
+            session['auth_token'] = Authentication.encode_auth_token(current_app.config['SECRET_KEY'], user.id)
+            return redirect(url_for('user_controller.index'))
+        except Exception as e:
+            return redirect(url_for('home_controller.index', error=e))
+    else:
+        return redirect(url_for('home_controller.index', error='Passwords don\'t match.'))
