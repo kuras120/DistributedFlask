@@ -1,20 +1,17 @@
 import datetime
-import logging
 
 from flask import Blueprint, render_template, jsonify, request, session, redirect, url_for, current_app
 
-from BLL.UserManager import UserManager
+from Utilities.PropertiesReader import PropertiesReader
 from Utilities.Authentication import Authentication
+from BLL.UserManager import UserManager
 from Utilities.Counter import Counter
 from Utilities.Format import Format
-from Utilities.PropertiesReader import PropertiesReader
-
-logger = logging.getLogger('logger')
-error_logger = logging.getLogger('error_logger')
 
 home_controller = Blueprint('home_controller', __name__)
 data = PropertiesReader('static/dictionary/feedback_index.properties')
 
+# TODO Refactor required https://stackoverflow.com/a/23417696
 likes_counter = Counter(990)
 
 
@@ -27,8 +24,10 @@ def index(error):
     current_year = datetime.datetime.now().year.__str__()
     login = None
     if 'auth_token' in session:
+        error = None
         try:
-            login = UserManager.get_user(current_app.config['SECRET_KEY'], session['auth_token']).login
+            user_id = Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token'])
+            login = UserManager.get_user(user_id).login
         except Exception as e:
             session.pop('auth_token', None)
             return redirect(url_for('home_controller.index', error=e))
@@ -40,7 +39,6 @@ def index(error):
 @home_controller.route('/add_like', methods=['POST'])
 def add_like():
     likes_counter.add(1)
-    logger.info('Like added.')
     number = Format.human_format(likes_counter.get())
     return jsonify(number)
 
@@ -48,8 +46,7 @@ def add_like():
 @home_controller.route('/account', methods=['POST'])
 def login_process():
     try:
-        user = UserManager.check_user(request.form['email'], request.form['password'])
-        logger.info("User " + user.login + " signed in.")
+        user = UserManager.read_user(request.form['email'], request.form['password'])
         session['auth_token'] = Authentication.encode_auth_token(current_app.config['SECRET_KEY'], user.id)
         return redirect(url_for('user_controller.index'))
     except Exception as e:

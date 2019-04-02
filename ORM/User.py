@@ -1,4 +1,8 @@
-from sqlalchemy import Column, Integer, String
+import secrets
+import hashlib
+from datetime import datetime
+
+from sqlalchemy import Column, Integer, String, DateTime
 
 from ORM.DbConfig import Base
 
@@ -9,11 +13,15 @@ class User(Base):
     login = Column(String, nullable=False)
     hashed_password = Column(String, nullable=False)
     salt = Column(String, nullable=False)
+    created_on = Column(DateTime, nullable=False)
+    last_login = Column(DateTime, nullable=True)
 
-    def __init__(self, login=None, hashed_password=None, salt=None):
+    def __init__(self, login, password):
         self.login = login
-        self.hashed_password = hashed_password
-        self.salt = salt
+        self.salt = secrets.token_hex(8)
+        self.hashed_password = hashlib.sha512(password.encode("utf-8") + self.salt.encode("utf-8")).hexdigest()
+        self.created_on = datetime.now()
+        self.last_login = None
 
     def __repr__(self):
-        return '<User %r>' % self.login
+        return '<User %s>' % self.login

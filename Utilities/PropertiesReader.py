@@ -14,7 +14,6 @@ class PropertiesReader:
         self.__file_dict = {}
 
         self.load(file)
-        self.__logger = logging.getLogger('logger')
 
     def load(self, file):
         file = open(file)
@@ -43,17 +42,16 @@ class PropertiesReader:
     def read(self, key, method=Method.Automatic):
         if method == Method.Automatic:
             if key in self.__dict_properties:
-                self.__logger.info('Key was found in local storage.')
+                logging.getLogger('logger').info('Survey loaded from local storage.')
                 return self.__dict_properties[key]
             else:
-                self.__logger.info('Finding key in properties file...')
                 return self.__read_from_source(key)
 
         elif method == Method.Manual_dictionary:
             if key in self.__dict_properties:
                 return self.__dict_properties[key]
             else:
-                self.__logger.error('Data with specific key doesn\'t exist.')
+                logging.getLogger('error_logger').exception('Wrong key to survey.')
 
         elif method == Method.Manual_properties:
             return self.__read_from_source(key)
@@ -61,9 +59,9 @@ class PropertiesReader:
     def __read_from_source(self, key):
         for key_d, values in self.__file_dict['keys'].items():
             if key in key_d:
-                self.__logger.info('Key was found.')
+                logging.getLogger('logger').info('Survey loaded.')
                 return self.__read_key_source(key, values)
-        self.__logger.error('Questionnaire data cannot be found.')
+        logging.getLogger('error_logger').exception('Survey cannot be found.')
 
     def __read_key_source(self, key, properties):
         new_dict = []
@@ -72,7 +70,8 @@ class PropertiesReader:
             if 'question' in element:
                 if question:
                     if not answers:
-                        self.__logger.warning('No answers for question: "' + question[0] + '". Possible error.')
+                        logging.getLogger('logger').warning('No answers for question: "' +
+                                                            question[0] + '". Check properties file.')
                     question.append(answers)
                     new_dict.append(question)
                     question, answers = [], []
@@ -81,7 +80,7 @@ class PropertiesReader:
                 if question:
                     answers.append(self.__file_dict['values'][element])
                 else:
-                    self.__logger.error('No question for answer: ' + element + '.')
+                    logging.getLogger('error_logger').exception('No question for answer: ' + element + '.')
 
         question.append(answers)
         new_dict.append(question)

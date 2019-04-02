@@ -1,59 +1,50 @@
 import logging
-import secrets
 
-from flask import Flask
+from BLL.UserManager import UserManager
+from ORM.DbConfig import init_db
 
-from HomeController import home_controller
-from UserController import user_controller
-from ORM.DbConfig import init_db, db_session
+def init_loggers():
+    # -- LOGGERS -- #
+    logger = logging.getLogger('logger')
+    error_logger = logging.getLogger('error_logger')
 
+    logger.setLevel(logging.INFO)
+    error_logger.setLevel(logging.DEBUG)
 
-# -- LOGGERS -- #
-main_logger = logging.getLogger('logger')
-error_logger = logging.getLogger('error_logger')
+    fh = logging.FileHandler('Logs/info.log')
+    fh.setLevel(logging.INFO)
 
-main_logger.setLevel(logging.INFO)
-error_logger.setLevel(logging.DEBUG)
+    fher = logging.FileHandler('Logs/error.log')
+    fher.setLevel(logging.DEBUG)
 
-fh = logging.FileHandler('Logs/info.log')
-fh.setLevel(logging.INFO)
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.WARNING)
 
-fher = logging.FileHandler('Logs/error.log')
-fher.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-ch = logging.StreamHandler()
-ch.setLevel(logging.WARNING)
+    fh.setFormatter(formatter)
 
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    fher.setFormatter(formatter)
+    ch.setFormatter(formatter)
 
-fh.setFormatter(formatter)
+    logger.addHandler(fh)
 
-fher.setFormatter(formatter)
-ch.setFormatter(formatter)
-
-main_logger.addHandler(fh)
-
-error_logger.addHandler(fher)
-error_logger.addHandler(ch)
-
-# -- APP -- #
-app = Flask(__name__)
-# Debug mode
-app.config['DEBUG'] = True
-# Secret key
-app.config['SECRET_KEY'] = secrets.token_urlsafe(16)
-# Bind controllers
-app.register_blueprint(home_controller, url_prefix='/')
-app.register_blueprint(user_controller, url_prefix='/account')
-main_logger.info("Blueprints created.")
-
-# Init database
-init_db()
-main_logger.info("Db initialized.")
+    error_logger.addHandler(fher)
+    error_logger.addHandler(ch)
 
 
-@app.teardown_appcontext
-def shutdown_session(exception=None):
-    db_session.remove()
+def init_config():
+    init_loggers()
+    logging.getLogger('logger').info('Loggers initialized.')
+    init_db()
+    logging.getLogger('logger').info('Db initialized.')
 
-# TODO logger tylko do najwazniejszych operacji. Zamiast niego historia do bazy danych.
+    try:
+        UserManager.add_user('admin@gmail.com', 'admin1')
+        UserManager.add_user('user@gmail.com', 'user1')
+        print('Test accounts added.')
+    except Exception as e:
+        print('Error: ' + e.__str__())
+        print('Test accounts already added.')
+
+
