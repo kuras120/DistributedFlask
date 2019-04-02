@@ -19,7 +19,7 @@ class User(Base):
     def __init__(self, login, password):
         self.login = login
         self.salt = secrets.token_hex(8)
-        self.hashed_password = hashlib.sha512(password.encode("utf-8") + self.salt.encode("utf-8")).hexdigest()
+        self.hashed_password = hashlib.sha3_512(password.encode("utf-8") + self.salt.encode("utf-8")).hexdigest()
         self.created_on = datetime.now()
         self.last_login = None
 
