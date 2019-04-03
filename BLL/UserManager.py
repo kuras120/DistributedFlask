@@ -4,8 +4,6 @@ import logging
 from ORM.User import User
 from ORM.DbConfig import db_session
 
-from sqlalchemy import update, delete
-
 from Utilities.CustomExceptions import UserException, DatabaseException
 
 
@@ -49,7 +47,8 @@ class UserManager:
     def update_user(user):
         try:
             hash_password = hashlib.sha3_512(user.hashed_password.encode('utf-8') + user.salt.encode('utf-8')).hexdigest()
-            update(User).where(User.id == user.id).values(login=user.login, hashed_password=hash_password)
+            db_session.query(User).filter(User.id == user.id).update(login=user.login, hashed_password=hash_password)
+            db_session.commit()
         except Exception as e:
             logging.getLogger('error_logger').exception(e)
             raise DatabaseException()
@@ -57,7 +56,8 @@ class UserManager:
     @staticmethod
     def delete_user(user_id):
         try:
-            delete(User).where(User.id == user_id)
+            db_session.query(User).filter(User.id == user_id).delete()
+            db_session.commit()
         except Exception as e:
             logging.getLogger('error_logger').exception(e)
             raise DatabaseException()
