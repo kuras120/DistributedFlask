@@ -22,7 +22,6 @@ def index():
     else:
         return redirect(url_for('home_controller.index', error='You have to log in first.'))
 
-
 @user_controller.route('/logout')
 def logout():
     session.pop('auth_token', None)
