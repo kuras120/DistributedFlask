@@ -16,12 +16,14 @@ from UserController import user_controller
 if __name__ == '__main__':
     app = Flask(__name__)
     app.config['SECRET_KEY'] = secrets.token_urlsafe(16)
+
+    Config.init_loggers()
+    logging.getLogger('logger').info('Loggers initialized.')
     # Bind controllers
     app.register_blueprint(home_controller, url_prefix='/')
     app.register_blueprint(user_controller, url_prefix='/account')
     logging.getLogger('logger').info('Blueprints created.')
-    Config.init_loggers()
-    logging.getLogger('logger').info('Loggers initialized.')
+
     init_db()
     logging.getLogger('logger').info('Db initialized.')
 

@@ -1,6 +1,12 @@
+import os
+
 from sqlalchemy import create_engine, update, delete
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
+
+if not os.path.isdir('static/DB'):
+    os.makedirs('static/DB')
+    print('DB folder created.')
 
 engine = create_engine('sqlite:///static/DB/flask_app.db', convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False,

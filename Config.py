@@ -1,3 +1,4 @@
+import os
 import logging
 
 from BLL.UserManager import UserManager
@@ -15,24 +16,25 @@ class Config:
         logger.setLevel(logging.INFO)
         error_logger.setLevel(logging.DEBUG)
 
+        if not os.path.isdir('Logs'):
+            os.makedirs('Logs')
+            print('Logs folder created.')
+
         fh = logging.FileHandler('Logs/info.log')
-        fh.setLevel(logging.INFO)
-
         fher = logging.FileHandler('Logs/error.log')
-        fher.setLevel(logging.DEBUG)
-
         ch = logging.StreamHandler()
+
+        fh.setLevel(logging.INFO)
+        fher.setLevel(logging.DEBUG)
         ch.setLevel(logging.WARNING)
 
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
         fh.setFormatter(formatter)
-
         fher.setFormatter(formatter)
         ch.setFormatter(formatter)
 
         logger.addHandler(fh)
-
         error_logger.addHandler(fher)
         error_logger.addHandler(ch)
 
@@ -40,13 +42,10 @@ class Config:
     def init_debug():
         try:
             db_session.query(User).delete()
-        except Exception as e:
-            print('Error: ' + e.__str__())
-        try:
+
             # Add users
             UserManager.create_user('admin@gmail.com', 'admin1')
             UserManager.create_user('user@gmail.com', 'user1')
-            print('Test accounts added.')
 
             # Update user
             usr = UserManager.get_user(2)
