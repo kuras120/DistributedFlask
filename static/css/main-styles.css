@@ -1,0 +1,99 @@
+body {
+    min-height: 100vh;
+    padding-top: 80px;
+    background: lightslategrey;
+}
+
+.alert {
+    margin: 0 !important;
+}
+/* NAVIGATION */
+.navbar {
+    height: 80px;
+    padding: 0;
+}
+
+#button-start {
+    width: 200px;
+    color: white;
+    background: cornflowerblue;
+    transition: all 300ms linear;
+}
+
+#button-start:hover {
+    background: royalblue;
+    cursor: pointer;
+}
+
+#button-mobile {
+    color: white;
+    background-color: #4b71e1;
+}
+
+/* FIRST IMPRESSION */
+#banner {
+    background: url("../images/city.jpg"), linear-gradient(rgba(123, 140, 160, 1), rgba(123, 140, 160, 1)) repeat-x;
+    background-size: 100% 100%;
+    height: 500px;
+    filter: brightness(100%);
+    transition: all 300ms linear;
+}
+
+#banner:hover {
+    filter: brightness(90%);
+    cursor: pointer;
+}
+
+#banner img {
+    border-radius: 50%;
+    height: 70px;
+    width: 70px;
+    border: 2px solid dodgerblue;
+}
+
+#banner i {
+    color: cornflowerblue;
+    border-color: cornflowerblue;
+    transition: all 200ms linear;
+}
+
+#banner i:not(:focus):hover {
+    color: royalblue;
+    border-color: royalblue;
+}
+
+#banner i:focus {
+    outline: none;
+}
+
+#like-button {
+    border: 2px solid;
+    border-radius: 18px;
+    height: 35px;
+}
+
+#sub-menu ul {
+    margin: 0 !important;
+    padding: 5px 0 5px 0;
+}
+
+#sub-menu li:not(:first-child) {
+    padding-left: .5rem;
+    border-left: 1px solid #000;
+}
+
+footer {
+    color: white;
+    background-color: rgb(29, 29, 29);
+}
+
+footer a {
+    color: white;
+}
+
+footer a:hover {
+    color: lightgrey;
+}
+.li-options {
+    color: white;
+}
