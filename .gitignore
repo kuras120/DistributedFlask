@@ -103,3 +103,5 @@ ENV/
 \.idea/
 
 \.vscode/
+
+static/DB/flask_app\.db

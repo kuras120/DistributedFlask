@@ -13,7 +13,7 @@ def index():
     if 'auth_token' in session:
         try:
             user_id = Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token'])
-            login = UserManager.get_user(user_id).login
+            login = UserManager.get_user(user_id).login.split('@')[0]
             current_year = datetime.datetime.now().year.__str__()
             return render_template('userPanel.html', user=login, year=current_year)
         except Exception as e:
