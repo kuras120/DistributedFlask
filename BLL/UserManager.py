@@ -46,8 +46,10 @@ class UserManager:
     @staticmethod
     def update_user(user):
         try:
-            hash_password = hashlib.sha3_512(user.hashed_password.encode('utf-8') + user.salt.encode('utf-8')).hexdigest()
-            db_session.query(User).filter(User.id == user.id).update(login=user.login, hashed_password=hash_password)
+            hash_password = hashlib.sha3_512(user.hashed_password.encode('utf-8') +
+                                             user.salt.encode('utf-8')).hexdigest()
+            db_session.query(User).filter(User.id == user.id).\
+                update({'login': user.login, 'hashed_password': hash_password})
             db_session.commit()
         except Exception as e:
             logging.getLogger('error_logger').exception(e)

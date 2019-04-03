@@ -43,9 +43,17 @@ class Config:
         except Exception as e:
             print('Error: ' + e.__str__())
         try:
+            # Add users
             UserManager.create_user('admin@gmail.com', 'admin1')
             UserManager.create_user('user@gmail.com', 'user1')
             print('Test accounts added.')
+
+            # Update user
+            usr = UserManager.get_user(2)
+            usr.login = 'eladminos@gmail.com'
+            usr.hashed_password = 'eladminos1'
+            UserManager.update_user(usr)
+
         except Exception as e:
             print('Error: ' + e.__str__())
 
