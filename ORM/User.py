@@ -2,12 +2,11 @@ import secrets
 import hashlib
 from datetime import datetime
 
+from ORM import db
 from sqlalchemy import Column, Integer, String, DateTime
 
-from ORM.DbConfig import Base
 
-
-class User(Base):
+class User(db.Model):
     __tablename__ = "Users"
     id = Column(Integer, primary_key=True)
     login = Column(String, nullable=False)

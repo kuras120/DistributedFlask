@@ -1,14 +1,13 @@
 import datetime
 
-from flask import Blueprint, render_template, jsonify, request, session, redirect, url_for, current_app
+from flask import render_template, jsonify, request, session, redirect, url_for, current_app
 
-from Utilities.PropertiesReader import PropertiesReader
 from Utilities.Authentication import Authentication
-from BLL.UserManager import UserManager
+from Controllers import home_controller
+from DAL.UserManager import UserManager
 from Utilities.Counter import Counter
 from Utilities.Format import Format
 
-home_controller = Blueprint('home_controller', __name__)
 
 # TODO Refactor required https://stackoverflow.com/a/23417696
 likes_counter = Counter(990)

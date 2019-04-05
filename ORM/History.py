@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
-from ORM.DbConfig import Base
+from ORM import db
 from enum import Enum
 
 
@@ -13,7 +13,7 @@ class TypeH(Enum):
     Error = 2
 
 
-class History(Base):
+class History(db.Model):
     __tablename__ = "History"
     id = Column(Integer, primary_key=True)
     type_h = Column(Integer, nullable=False)
