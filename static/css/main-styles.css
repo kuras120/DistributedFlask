@@ -79,6 +79,7 @@ body {
 
 #sub-menu li {
     padding-right: .5rem;
+    padding-left: .5rem;
 }
 
 #sub-menu li:not(:first-child) {
