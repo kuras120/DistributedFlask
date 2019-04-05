@@ -104,4 +104,4 @@ ENV/
 
 \.vscode/
 
-static/DB/flask_app\.db
+static/DB/

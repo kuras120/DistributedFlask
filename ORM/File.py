@@ -3,10 +3,10 @@ from datetime import datetime
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
-from ORM.DbConfig import Base
+from ORM import db
 
 
-class File(Base):
+class File(db.Model):
     __tablename__ = "Data"
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
