@@ -1,14 +1,13 @@
 import datetime
 
-from flask import Blueprint, render_template, jsonify, request, session, redirect, url_for, current_app
+from flask import render_template, jsonify, request, session, redirect, url_for, current_app
 
-from Utilities.PropertiesReader import PropertiesReader
 from Utilities.Authentication import Authentication
-from BLL.UserManager import UserManager
+from Controllers import home_controller
+from DAL.UserManager import UserManager
 from Utilities.Counter import Counter
 from Utilities.Format import Format
 
-home_controller = Blueprint('home_controller', __name__)
 
 # TODO Refactor required https://stackoverflow.com/a/23417696
 likes_counter = Counter(990)
@@ -25,7 +24,7 @@ def index(error):
         error = None
         try:
             user_id = Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token'])
-            login = UserManager.get_user(user_id).login
+            login = UserManager.get_user(user_id).login.split('@')[0]
         except Exception as e:
             session.pop('auth_token', None)
             return redirect(url_for('home_controller.index', error=e))
