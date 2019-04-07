@@ -4,9 +4,10 @@ import secrets
 
 from flask import Flask
 
-from Config import init_loggers, init_debug, init_db, bind_blueprints
+from Config import init_loggers, init_debug, init_db, bind_blueprints, init_env
 
 app = Flask(__name__)
+init_env()
 app.config['SECRET_KEY'] = secrets.token_urlsafe(16)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///static/DB/flask_app.db'

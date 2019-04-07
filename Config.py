@@ -14,6 +14,14 @@ def bind_blueprints(app):
     app.register_blueprint(user_controller, url_prefix='/account')
 
 
+def init_env():
+    if not os.path.isfile('.env'):
+        file = open('.env', 'w+')
+        file.write('FLASK_ENV=development')
+        file.close()
+        print('Env file created.')
+
+
 def init_db(app):
     if not os.path.isdir('static/DB'):
         os.makedirs('static/DB')
@@ -63,11 +71,7 @@ def init_debug():
         UserManager.create_user('admin@gmail.com', 'admin1')
         UserManager.create_user('user@gmail.com', 'user1')
 
-        # Update user
-        usr = UserManager.get_user(2)
-        usr.login = 'eladminos@gmail.com'
-        usr.hashed_password = 'eladminos1'
-        UserManager.update_user(usr)
+        print('Test users added.')
 
     except Exception as e:
         print('Error: ' + e.__str__())
