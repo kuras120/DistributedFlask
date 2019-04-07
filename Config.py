@@ -17,7 +17,8 @@ def bind_blueprints(app):
 def init_env():
     if not os.path.isfile('.env'):
         file = open('.env', 'w+')
-        file.write('FLASK_ENV=development')
+        file.write('FLASK_ENV=development\n'
+                   'DATABASE_CONNECTION_STRING=sqlite:///static/DB/flask_app.db\n')
         file.close()
         print('Env file created.')
 
@@ -70,8 +71,6 @@ def init_debug():
         # Add users
         UserManager.create_user('admin@gmail.com', 'admin1')
         UserManager.create_user('user@gmail.com', 'user1')
-
-        print('Test users added.')
 
     except Exception as e:
         print('Error: ' + e.__str__())

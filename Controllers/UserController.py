@@ -34,6 +34,7 @@ def release_zombies():
                                       request.form['numbers'] + ' ' +
                                       request.form['parts']),
                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    print(data)
     output = ''
     for line in data.stdout.decode('utf-8').split('\n'):
         if 'output' in line:
