@@ -19,23 +19,28 @@ def is_primal(number):
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
-        print('Invalid number of arguments.')
+        sys.stdout.write('Invalid number of arguments.')
     else:
         data = []
         for elem in split(list(range(1, int(sys.argv[1]))), int(sys.argv[2])):
             data.append(elem)
 
         zombies = Fabric()
-        brains = zombies.work(data, is_primal)
+
+        try:
+            brains = zombies.work(data, is_primal)
+        except Exception as e:
+            sys.exit(e)
 
         brains.sort(key=lambda x: x[0])
 
         output = []
 
-        print('output:', end=' ')
+        sys.stdout.write('\noutput: ')
         for tissue in brains:
             for neuron in tissue[1]:
                 output.append(neuron)
-                print(neuron, end=' ')
-        print('\n', end='')
-        sys.exit(output)
+                sys.stdout.write(neuron.__str__() + ' ')
+        sys.stdout.write('\n')
+
+        sys.exit(0)
