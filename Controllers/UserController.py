@@ -34,18 +34,22 @@ def release_zombies():
                                       request.form['numbers'] + ' ' +
                                       request.form['parts']),
                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    output = ''
-    for line in data.stdout.decode('utf-8').split('\n'):
-        if 'output' in line:
-            output = line
-        else:
-            if line:
-                logging.getLogger('logger').info(line.strip())
 
-    logging.getLogger('logger').info('Processing completed')
-    logging.getLogger('logger').info(output)
+    if not data.stderr:
+        output = ''
+        for line in data.stdout.decode('utf-8').split('\n'):
+            if 'output' in line:
+                output = line
+            else:
+                if line:
+                    logging.getLogger('logger').info(line.strip())
 
-    return jsonify(output.split(':')[1].strip())
+        logging.getLogger('logger').info('Processing completed')
+        logging.getLogger('logger').info(output)
+
+        return jsonify(output.split(':')[1].strip())
+    else:
+        return jsonify(data.stderr.decode('utf-8').split('\n'))
 
 
 @user_controller.route('/logout')
