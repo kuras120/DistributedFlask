@@ -3,6 +3,9 @@ import logging
 
 from ORM import db
 from ORM.User import User
+
+from dotenv import load_dotenv
+
 from DAL.UserManager import UserManager
 
 from Controllers.HomeController import home_controller
@@ -21,6 +24,8 @@ def init_env():
                    'DATABASE_CONNECTION_STRING=sqlite:///static/DB/flask_app.db\n')
         file.close()
         print('Env file created.')
+
+    load_dotenv()
 
 
 def init_db(app):

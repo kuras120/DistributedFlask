@@ -1,7 +1,5 @@
 import sys
 import math
-# IDE wskazuje na blad wzgledem roota, nie pliku znajdujacego sie w tym samym folderze
-# TODO Naprawic sciezki
 from Fabric import Fabric
 
 
