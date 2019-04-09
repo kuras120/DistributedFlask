@@ -3,6 +3,9 @@ import logging
 
 from ORM import db
 from ORM.User import User
+
+from dotenv import load_dotenv
+
 from DAL.UserManager import UserManager
 
 from Controllers.HomeController import home_controller
@@ -12,6 +15,17 @@ from Controllers.UserController import user_controller
 def bind_blueprints(app):
     app.register_blueprint(home_controller, url_prefix='/')
     app.register_blueprint(user_controller, url_prefix='/account')
+
+
+def init_env():
+    if not os.path.isfile('.env'):
+        file = open('.env', 'w+')
+        file.write('FLASK_ENV=development\n'
+                   'DATABASE_CONNECTION_STRING=sqlite:///static/DB/flask_app.db\n')
+        file.close()
+        print('Env file created.')
+
+    load_dotenv()
 
 
 def init_db(app):
@@ -63,16 +77,5 @@ def init_debug():
         UserManager.create_user('admin@gmail.com', 'admin1')
         UserManager.create_user('user@gmail.com', 'user1')
 
-        # Update user
-        usr = UserManager.get_user(2)
-        usr.login = 'eladminos@gmail.com'
-        usr.hashed_password = 'eladminos1'
-        UserManager.update_user(usr)
-
     except Exception as e:
         print('Error: ' + e.__str__())
-
-
-
-
-
