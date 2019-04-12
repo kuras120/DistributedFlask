@@ -29,7 +29,8 @@ def index():
 def release_zombies():
     logging.getLogger('logger').info('Processing started')
     data = subprocess.run(shlex.split('mpiexec -n ' +
-                                      request.form['threads'] +
+                                      request.form['threads'] + 
+				      #' -f MPI/hostfile' +
                                       ' python MPI/StartScript.py ' +
                                       request.form['numbers'] + ' ' +
                                       request.form['parts']),
