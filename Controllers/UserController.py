@@ -7,7 +7,7 @@ from flask import render_template, session, redirect, url_for, current_app, json
 
 from Utilities.Authentication import Authentication
 from Controllers import user_controller
-from DAL.UserManager import UserManager
+from DAL.UserDAO import UserDAO
 
 
 @user_controller.route('/')
@@ -15,7 +15,7 @@ def index():
     if 'auth_token' in session:
         try:
             user_id = Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token'])
-            login = UserManager.get_user(user_id).login.split('@')[0]
+            login = UserDAO.get(user_id).login.split('@')[0]
             current_year = datetime.datetime.now().year.__str__()
             return render_template('userPanel.html', user=login, year=current_year)
         except Exception as e:
@@ -28,12 +28,17 @@ def index():
 @user_controller.route('/prime-zombies', methods=['POST'])
 def release_zombies():
     logging.getLogger('logger').info('Processing started')
-    data = subprocess.run(shlex.split('mpiexec -n ' +
-                                      request.form['threads'] +
-                                      ' python MPI/StartScript.py ' +
-                                      request.form['numbers'] + ' ' +
-                                      request.form['parts']),
-                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    try:
+        data = subprocess.run(shlex.split('mpiexec -n ' +
+                                          request.form['threads'] +
+                                          #' -f MPI/hostfile' +
+                                          ' python MPI/StartScript.py ' +
+                                          request.form['numbers'] + ' ' +
+                                          request.form['parts']),
+                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    except Exception as e:
+        logging.getLogger('error_logger').exception(e)
+        return jsonify(e)
 
     if not data.stderr:
         output = ''

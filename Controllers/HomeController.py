@@ -4,7 +4,7 @@ from flask import render_template, jsonify, request, session, redirect, url_for,
 
 from Utilities.Authentication import Authentication
 from Controllers import home_controller
-from DAL.UserManager import UserManager
+from DAL.UserDAO import UserDAO
 from Utilities.Counter import Counter
 from Utilities.Format import Format
 
@@ -24,7 +24,7 @@ def index(error):
         error = None
         try:
             user_id = Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token'])
-            login = UserManager.get_user(user_id).login.split('@')[0]
+            login = UserDAO.get(user_id).login.split('@')[0]
         except Exception as e:
             session.pop('auth_token', None)
             return redirect(url_for('home_controller.index', error=e))
@@ -42,7 +42,7 @@ def add_like():
 @home_controller.route('/login_process', methods=['POST'])
 def login_process():
     try:
-        user = UserManager.read_user(request.form['email'], request.form['password'])
+        user = UserDAO.read(request.form['email'], request.form['password'])
         session['auth_token'] = Authentication.encode_auth_token(current_app.config['SECRET_KEY'], user.id)
         return redirect(url_for('user_controller.index'))
     except Exception as e:
@@ -53,7 +53,7 @@ def login_process():
 def register_process():
     if request.form['password'] == request.form['conf_password']:
         try:
-            user = UserManager.create_user(request.form['email'], request.form['password'])
+            user = UserDAO.create(request.form['email'], request.form['password'])
             session['auth_token'] = Authentication.encode_auth_token(current_app.config['SECRET_KEY'], user.id)
             return redirect(url_for('user_controller.index'))
         except Exception as e:
