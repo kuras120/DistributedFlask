@@ -6,7 +6,7 @@ from ORM.User import User
 
 from dotenv import load_dotenv
 
-from DAL.UserManager import UserManager
+from DAL.UserDAO import UserDAO
 
 from Controllers.HomeController import home_controller
 from Controllers.UserController import user_controller
@@ -74,8 +74,8 @@ def init_debug():
         db.session.query(User).delete()
 
         # Add users
-        UserManager.create_user('admin@gmail.com', 'admin1')
-        UserManager.create_user('user@gmail.com', 'user1')
+        UserDAO.create('admin@gmail.com', 'admin1')
+        UserDAO.create('user@gmail.com', 'user1')
 
     except Exception as e:
         print('Error: ' + e.__str__())

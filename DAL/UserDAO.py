@@ -7,9 +7,9 @@ from ORM.User import User
 from Utilities.CustomExceptions import UserException, DatabaseException
 
 
-class UserManager:
+class UserDAO:
     @staticmethod
-    def create_user(login, password):
+    def create(login, password):
         try:
             if not db.session.query(User).filter(User.login == login).first():
                 new_user = User(login=login, password=password)
@@ -25,7 +25,7 @@ class UserManager:
         raise UserException(msg)
 
     @staticmethod
-    def read_user(login, password):
+    def read(login, password):
         try:
             user = db.session.query(User).filter(User.login == login).first()
         except Exception as e:
@@ -44,7 +44,7 @@ class UserManager:
             raise UserException()
 
     @staticmethod
-    def update_user(user):
+    def update(user):
         try:
             hash_password = hashlib.sha3_512(user.hashed_password.encode('utf-8') +
                                              user.salt.encode('utf-8')).hexdigest()
@@ -56,7 +56,7 @@ class UserManager:
             raise DatabaseException()
 
     @staticmethod
-    def delete_user(user_id):
+    def delete(user_id):
         try:
             db.session.query(User).filter(User.id == user_id).delete()
             db.session.commit()
@@ -65,11 +65,17 @@ class UserManager:
             raise DatabaseException()
 
     @staticmethod
-    def get_user(user_id):
+    def get(user_id):
         try:
             return db.session.query(User).filter(User.id == user_id).first()
         except Exception as e:
             logging.getLogger('error_logger').exception(e)
             raise DatabaseException()
 
-
+    @staticmethod
+    def get_all():
+        try:
+            return db.session.query(User).all()
+        except Exception as e:
+            logging.getLogger('error_logger').exception(e)
+            raise DatabaseException()
