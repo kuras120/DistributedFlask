@@ -48,7 +48,7 @@
                 <form action="" method="GET">
                     <div class="modal-body">
 						<div class="form-group">
-							<label for="taskName">Your files</label>
+							<label>Your files</label>
 							<select class="custom-select mr-sm-2" id="uploadedFileSelect">
                               <option selected>Choose...</option>
 							  <option value="1">¯\_(ツ)_/¯</option>
@@ -65,7 +65,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="tasksViewer">View your uploaded files</h5>
+                    <h5 class="modal-title" id="tasksViewer">View your tasks</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
@@ -74,7 +74,7 @@
                 <form action="" method="GET">
                     <div class="modal-body">
 						<div class="form-group">
-							<label for="taskName">Your files</label>
+							<label>Your tasks</label>
 							<select class="custom-select mr-sm-2" id="tasksSelect">
                               <option selected>Choose...</option>
 							  <option value="1">¯\_(ツ)_/¯</option>
@@ -149,13 +149,13 @@
         <ul class="col-12 list-inline d-flex align-items-center justify-content-center">
             <li><h4><a href="#" data-toggle="modal" data-target="#fileUploaderModal" class="li-options">Upload file</a></h4></li>
             <li><h4><a href="#" data-toggle="modal" data-target="#taskSchedulerModal" class="li-options">Schedule task</a></h4></li>
-            <li><h4><a href="#" data-toggle="modal" data-target="#viewYourFiles" class="li-options">View Your files</a></h4></li>
-            <li><h4><a href="#" data-toggle="modal" data-target="#viewYourTasks" class="li-options">View Your tasks</a></h4></li>
+            <li><h4><a href="#" data-toggle="modal" data-target="#filesViewerModal" class="li-options">View Your files</a></h4></li>
+            <li><h4><a href="#" data-toggle="modal" data-target="#tasksViewerModal" class="li-options">View Your tasks</a></h4></li>
         </ul>
     </div>
     <div class="row">
         <div class="col-12 d-flex align-items-center justify-content-center">
-            <form action="{{ url_for('user_controller.release_zombies') }}" method="POST">
+	<form action="{{ url_for('user_controller.release_zombies') }}" method="POST">
                 <div class="form-group">
                     <label for="threads">Threads</label>
                     <input type="text" name="threads" class="form-control" id="threads" placeholder="ex. 4" required>
