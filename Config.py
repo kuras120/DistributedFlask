@@ -6,6 +6,7 @@ from ORM import db
 from dotenv import load_dotenv
 
 from DAL.UserDAO import UserDAO
+from DAL.FileDAO import FileDAO
 
 from Controllers.HomeController import home_controller
 from Controllers.UserController import user_controller

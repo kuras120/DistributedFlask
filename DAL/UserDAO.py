@@ -8,6 +8,8 @@ from ORM.User import User
 from ORM.File import File
 from ORM.History import History, TypeH
 
+from DAL import data_path
+
 from Utilities.CustomExceptions import UserException, DatabaseException
 
 
@@ -21,8 +23,10 @@ class UserDAO:
                 new_user.history.append(h_log)
                 db.session.add(new_user)
                 db.session.commit()
-                if not os.path.isdir('static/DATA/' + new_user.home_catalog):
-                    os.makedirs('static/DATA/' + new_user.home_catalog)
+                if not os.path.isdir(data_path + new_user.home_catalog):
+                    os.makedirs(data_path + new_user.home_catalog)
+                    os.makedirs(data_path + new_user.home_catalog + '/INPUT')
+                    os.makedirs(data_path + new_user.home_catalog + '/OUTPUT')
                 return new_user
         except Exception as e:
             db.session.rollback()
@@ -74,8 +78,8 @@ class UserDAO:
             try:
                 db.session.delete(user)
                 db.session.commit()
-                if os.path.isdir('static/DATA/' + user.home_catalog):
-                    shutil.rmtree('static/DATA/' + user.home_catalog)
+                if os.path.isdir(data_path + user.home_catalog):
+                    shutil.rmtree(data_path + user.home_catalog)
             except Exception as e:
                 db.session.rollback()
                 logging.getLogger('error_logger').exception(e)
@@ -91,8 +95,8 @@ class UserDAO:
                 db.session.delete(user)
             db.session.commit()
             for user in users:
-                if os.path.isdir('static/DATA/' + user.home_catalog):
-                    shutil.rmtree('static/DATA/' + user.home_catalog)
+                if os.path.isdir(data_path + user.home_catalog):
+                    shutil.rmtree(data_path + user.home_catalog)
             return 'All rows dropped.'
         except Exception as e:
             db.session.rollback()

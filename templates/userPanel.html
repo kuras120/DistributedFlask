@@ -19,12 +19,12 @@
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <!-- formularz do zlecania zadan -->
-                <form action="" method="POST">
+                <!-- formularz do uploadowania plikow -->
+                <form action="{{ url_for('user_controller.add_file') }}" method="POST" enctype="multipart/form-data">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="exampleFormControlFile1">File</label>
-                            <input type="file" class="form-control-file" id="exampleFormControlFile1">
+                            <label for="filePath">File</label>
+                            <input type="file" name="filePath" class="form-control-file" id="filePath" required>
                         </div>
                         </div>
                     <div class="modal-footer">
@@ -93,7 +93,7 @@
         <ul class="col-12 list-inline d-flex align-items-center justify-content-center">
             <li><h4><a href="#" data-toggle="modal" data-target="#fileUploaderModal" class="li-options">Upload file</a></h4></li>
             <li><h4><a href="#" data-toggle="modal" data-target="#taskSchedulerModal" class="li-options">Schedule task</a></h4></li>
-            <li><h4><a href="#" class="li-options">View Your files</a></h4></li>
+            <li><h4><a href="{{ url_for('user_controller.get_files') }}" class="li-options">View Your files</a></h4></li>
             <li><h4><a href="#" class="li-options">View Your tasks</a></h4></li>
         </ul>
     </div>

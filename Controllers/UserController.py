@@ -3,7 +3,7 @@ import logging
 import datetime
 import subprocess
 
-
+from DAL import data_path
 from DAL.UserDAO import UserDAO
 from DAL.FileDAO import FileDAO
 
@@ -12,7 +12,7 @@ from Controllers import user_controller
 from werkzeug.utils import secure_filename
 
 from Utilities.Authentication import Authentication
-
+from Utilities.CustomExceptions import UserException, DatabaseException
 
 from flask import render_template, session, redirect, url_for, current_app, jsonify, request
 
@@ -26,9 +26,13 @@ def index(error):
             login = UserDAO.get(user_id).login.split('@')[0]
             current_year = datetime.datetime.now().year.__str__()
             return render_template('userPanel.html', user=login, year=current_year, error=error)
-        except Exception as e:
+        except UserException as e:
             session.pop('auth_token', None)
             return redirect(url_for('home_controller.index', error=e))
+        except Exception as e:
+            session.pop('auth_token', None)
+            logging.getLogger('error_logger').exception(e)
+            return redirect(url_for('home_controller.index', error='Something went wrong.'))
     else:
         return redirect(url_for('home_controller.index', error='You have to log in first.'))
 
@@ -67,27 +71,34 @@ def release_zombies():
 
 @user_controller.route('add_file', methods=['POST'])
 def add_file():
-    name = request.form['name']
-    description = request.form['description']
-    file_front = request.files['file_path']
+    file_front = request.files['filePath']
     try:
         user = UserDAO.get(Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token']))
-        file_back = FileDAO.create(name, description, user)
-    except Exception as e:
+        file_back = FileDAO.create(file_front.filename, user)
+        file_front.save(data_path + file_back.input_path + secure_filename(file_front.filename))
+        return redirect(url_for('user_controller.index'))
+    except DatabaseException as e:
         session.pop('auth_token', None)
         return redirect(url_for('home_controller.index', error=e))
-
-    try:
-        file_front.save(file_back.input_path, secure_filename(name))
+    except UserException as e:
+        return redirect(url_for('user_controller.index', error=e))
     except Exception as e:
         logging.getLogger('error_logger').exception(e)
-        return redirect(url_for('user_controller.index', error='File cannot be uploaded. Try later.'))
+        return redirect(url_for('user_controller.index', error='File cannot be uploaded.'))
 
 
 @user_controller.route('get_files', methods=['GET'])
 def get_files():
-    user = UserDAO.get(Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token']))
-    return jsonify(user.files)
+    try:
+        user = UserDAO.get(Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token']))
+    except UserException as e:
+        session.pop('auth_token', None)
+        return redirect(url_for('home_controller.index', error=e))
+
+    data = []
+    for elem in user.files:
+        data.append(elem.as_dict())
+    return jsonify(data)
 
 
 @user_controller.route('queue_file', methods=['POST'])

@@ -26,3 +26,6 @@ class History(db.Model):
 
     def __repr__(self):
         return '<%s: %s>' % (self.type_h, self.description)
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
