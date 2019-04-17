@@ -48,9 +48,9 @@ def release_zombies():
                                           request.form['threads'] +
                                           #' -f MPI/hostfile' +
                                           ' python MPI/StartScript.py ' +
+                                          'static/DATA/' +
                                           os.path.join(user.home_catalog, 'INPUT') + ' ' +
-                                          '1920 1080 20 ' +
-                                          os.path.join(user.home_catalog, 'INPUT/test.zip')),
+                                          '1920 1080 20 ' + 'test.zip'),
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     except Exception as e:

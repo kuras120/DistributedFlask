@@ -2,7 +2,7 @@ import os
 import sys
 import math
 import shlex
-import zipfile
+
 import subprocess
 
 from Fabric import Fabric
@@ -32,22 +32,12 @@ if __name__ == '__main__':
         r = sys.argv[4]
         zip_arch = os.path.join(user_input_path, sys.argv[5])
 
-        zipp = zipfile.ZipFile(zip_arch)
-
-        data = zipp.extractall(user_input_path)
-        folder = os.path.join(user_input_path, 'test/')
-        folder_cont = os.listdir(folder)
-
-        files = []
-        for elem in folder_cont:
-            file = os.path.join(folder, elem)
-            files.append(file)
-
         zombies = Fabric(x, y, r)
 
         try:
-            brains = zombies.work(files)
-            subprocess.run(shlex.split('ffmpeg -r 4 -i ' + folder + '/%d.bmp -c:v libx264 -vf fps=60 -pix_fmt yuv420p '
+            brains = zombies.work(user_input_path, zip_arch)
+            subprocess.run(shlex.split('ffmpeg -r 4 -i ' + os.path.join(user_input_path, 'test/') +
+                                       '/%d.bmp -c:v libx264 -vf fps=60 -pix_fmt yuv420p '
                                        + os.path.join(user_input_path, '../OUTPUT') + '/out.mp4'),
                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             sys.exit(0)
