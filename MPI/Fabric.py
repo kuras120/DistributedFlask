@@ -1,5 +1,7 @@
+import os
 import sys
 import shlex
+import zipfile
 import subprocess
 from mpi4py import MPI
 
@@ -15,10 +17,20 @@ class Fabric:
         self.y = y
         self.r = r
 
-    def work(self, data):
+    def work(self, user_input_path, zip_arch):
         try:
             if self.__rank == 0:
-                return self.create_master(data)
+                zipp = zipfile.ZipFile(zip_arch)
+
+                data = zipp.extractall(user_input_path)
+                folder = os.path.join(user_input_path, 'test/')
+                folder_cont = os.listdir(folder)
+
+                files = []
+                for elem in folder_cont:
+                    file = os.path.join(folder, elem)
+                    files.append(file)
+                return self.create_master(files)
             else:
                 self.create_slave()
         except Exception as e:
