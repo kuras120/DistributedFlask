@@ -1,20 +1,26 @@
 import sys
+import shlex
+import subprocess
 from mpi4py import MPI
 
 
 class Fabric:
-    def __init__(self):
+    def __init__(self, x, y, r):
         self.__comm = MPI.COMM_WORLD
         self.__size = self.__comm.Get_size()
         self.__rank = self.__comm.Get_rank()
         self.__status = MPI.Status()
 
-    def work(self, data, function):
+        self.x = x
+        self.y = y
+        self.r = r
+
+    def work(self, data):
         try:
             if self.__rank == 0:
                 return self.create_master(data)
             else:
-                self.create_slave(function)
+                self.create_slave()
         except Exception as e:
             raise e
 
@@ -55,7 +61,7 @@ class Fabric:
         sys.stdout.write(self.__rank.__str__() + ' master thanks, that he could serve you. Farewell, my lord.')
         return memory
 
-    def create_slave(self, function):
+    def create_slave(self):
         while True:
             try:
                 data = self.__comm.recv(source=0)
@@ -64,11 +70,9 @@ class Fabric:
                     sys.stdout.write(data[1])
                     exit()
                 else:
-                    new_data = []
-                    for number in data[1]:
-                        solution, check = function(number)
-                        if check:
-                            new_data.append(solution)
+                    new_data = subprocess.run(shlex.split('./Raytracing ' + '-x ' + self.x + ' -y ' + self.y +
+                                                          ' -r ' + self.r + ' -i ' + data[1]),
+                                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
                     self.__comm.send([data[0], new_data], dest=0)
             except Exception as e:

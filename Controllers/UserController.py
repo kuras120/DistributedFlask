@@ -1,3 +1,4 @@
+import os
 import shlex
 import logging
 import datetime
@@ -41,13 +42,17 @@ def index(error):
 def release_zombies():
     logging.getLogger('logger').info('Processing started')
     try:
+        user_id = Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token'])
+        user = UserDAO.get(user_id)
         data = subprocess.run(shlex.split('mpiexec -n ' +
                                           request.form['threads'] +
                                           #' -f MPI/hostfile' +
                                           ' python MPI/StartScript.py ' +
-                                          request.form['numbers'] + ' ' +
-                                          request.form['parts']),
+                                          os.path.join(user.home_catalog, 'INPUT') + ' ' +
+                                          '1920 1080 20 ' +
+                                          os.path.join(user.home_catalog, 'INPUT/test.zip')),
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
     except Exception as e:
         logging.getLogger('error_logger').exception(e)
         return jsonify(e)
@@ -64,7 +69,7 @@ def release_zombies():
         logging.getLogger('logger').info('Processing completed')
         logging.getLogger('logger').info(output)
 
-        return jsonify(output.split(':')[1].strip())
+        return jsonify(output)
     else:
         return jsonify(data.stderr.decode('utf-8').split('\n'))
 
