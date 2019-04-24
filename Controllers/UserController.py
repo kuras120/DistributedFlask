@@ -90,19 +90,6 @@ def delete_files():
         return redirect(url_for('user_controller.index', error=e))
 
 
-@user_controller.route('/get_files')
-def get_files():
-    try:
-        user_id = Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token'])
-        files = FileDAO.get_all(user_id)
-        strings = []
-        for elem in files:
-            strings.append(elem.as_dict())
-        return jsonify(strings)
-    except Exception as e:
-        return redirect(url_for('user_controller.index', error=e))
-
-
 @user_controller.before_request
 def before_request():
     if 'auth_token' in session:
