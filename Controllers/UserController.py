@@ -35,13 +35,14 @@ def release_zombies():
     try:
         user_id = Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token'])
         user = UserDAO.get(user_id)
-        data = subprocess.run(shlex.split('mpiexec -n ' +
-                                          request.form['threads'] +
+        resolution = request.form['resolutionSelect'].split('x')
+        data = subprocess.run(shlex.split('mpiexec -n 4' +
                                           #' -f MPI/hostfile' +
                                           ' python MPI/StartScript.py ' +
                                           'static/DATA/' +
-                                          os.path.join(user.home_catalog, 'INPUT') + ' ' +
-                                          '1920 1080 20 ' + 'test.zip'),
+                                          os.path.join(user.home_catalog, 'INPUT ') +
+                                          resolution[0] + resolution[1] +
+                                          ' 20 ' + request.form['fileSelect']),
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     except Exception as e:

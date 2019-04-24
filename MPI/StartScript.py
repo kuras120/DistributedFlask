@@ -32,6 +32,11 @@ if __name__ == '__main__':
         r = sys.argv[4]
         zip_arch = os.path.join(user_input_path, sys.argv[5])
 
+        print(x)
+        print(y)
+        print(r)
+        print(zip_arch)
+
         zombies = Fabric(x, y, r)
 
         try:
