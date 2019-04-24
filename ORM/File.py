@@ -9,21 +9,17 @@ from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 
 
 class File(db.Model):
-    __tablename__ = "File"
+    __tablename__ = "Files"
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
-    input_path = Column(String, nullable=False)
-    output_path = Column(String, nullable=False)
     added_on = Column(DateTime, nullable=False)
     user_id = Column(Integer, ForeignKey("Users.id"))
 
-    def __init__(self, name, user_catalog, description=None):
+    def __init__(self, name, description=None):
         self.name = name
         self.description = description
-        self.input_path = user_catalog + '/INPUT/'
-        self.output_path = user_catalog + '/OUTPUT/'
-        self.added_on = datetime.now()
+        self.added_on = datetime.now().replace(microsecond=0)
 
     def __repr__(self):
         return '<File %s>' % self.name

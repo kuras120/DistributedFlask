@@ -1,19 +1,17 @@
 import os
+import json
 import shlex
 import logging
 import datetime
 import subprocess
+import urllib.parse
 
-from DAL import data_path
 from DAL.UserDAO import UserDAO
 from DAL.FileDAO import FileDAO
 
 from Controllers import user_controller
 
-from werkzeug.utils import secure_filename
-
 from Utilities.Authentication import Authentication
-from Utilities.CustomExceptions import UserException, DatabaseException
 
 from flask import render_template, session, redirect, url_for, current_app, jsonify, request
 
@@ -21,21 +19,14 @@ from flask import render_template, session, redirect, url_for, current_app, json
 @user_controller.route('/', defaults={'error': None})
 @user_controller.route('/<error>')
 def index(error):
-    if 'auth_token' in session:
-        try:
-            user_id = Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token'])
-            login = UserDAO.get(user_id).login.split('@')[0]
-            current_year = datetime.datetime.now().year.__str__()
-            return render_template('userPanel.html', user=login, year=current_year, error=error)
-        except UserException as e:
-            session.pop('auth_token', None)
-            return redirect(url_for('home_controller.index', error=e))
-        except Exception as e:
-            session.pop('auth_token', None)
-            logging.getLogger('error_logger').exception(e)
-            return redirect(url_for('home_controller.index', error='Something went wrong.'))
-    else:
-        return redirect(url_for('home_controller.index', error='You have to log in first.'))
+    user = UserDAO.get(Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token']))
+    try:
+        login = user.login.split('@')[0]
+        files = FileDAO.get_all(user.id)
+        current_year = datetime.datetime.now().year.__str__()
+        return render_template('userPanel.html', user=login, files=files, year=current_year, error=error)
+    except Exception as e:
+        return redirect(url_for('home_controller.logout', error=e))
 
 
 @user_controller.route('/prime-zombies', methods=['POST'])
@@ -74,44 +65,50 @@ def release_zombies():
         return jsonify(data.stderr.decode('utf-8').split('\n'))
 
 
-@user_controller.route('add_file', methods=['POST'])
+@user_controller.route('/add_file', methods=['POST'])
 def add_file():
-    file_front = request.files['filePath']
+    file = request.files['filePath']
     try:
         user = UserDAO.get(Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token']))
-        file_back = FileDAO.create(file_front.filename, user)
-        file_front.save(data_path + file_back.input_path + secure_filename(file_front.filename))
+        FileDAO.create(file, user)
         return redirect(url_for('user_controller.index'))
-    except DatabaseException as e:
-        session.pop('auth_token', None)
-        return redirect(url_for('home_controller.index', error=e))
-    except UserException as e:
-        return redirect(url_for('user_controller.index', error=e))
     except Exception as e:
-        logging.getLogger('error_logger').exception(e)
-        return redirect(url_for('user_controller.index', error='File cannot be uploaded.'))
+        return redirect(url_for('user_controller.index', error=e))
 
 
-@user_controller.route('get_files', methods=['GET'])
+@user_controller.route('/delete_files', methods=['POST'])
+def delete_files():
+    try:
+        data = json.loads(urllib.parse.unquote(request.get_data('files').decode('utf-8')))
+        user = UserDAO.get(Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token']))
+        data_entities = []
+        for name in data:
+            data_entities.append(FileDAO.read(name, user.id))
+        FileDAO.delete(data_entities, user.home_catalog)
+        return redirect(url_for('user_controller.index'))
+    except Exception as e:
+        return redirect(url_for('user_controller.index', error=e))
+
+
+@user_controller.route('/get_files')
 def get_files():
     try:
-        user = UserDAO.get(Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token']))
-    except UserException as e:
-        session.pop('auth_token', None)
-        return redirect(url_for('home_controller.index', error=e))
-
-    data = []
-    for elem in user.files:
-        data.append(elem.as_dict())
-    return jsonify(data)
-
-
-@user_controller.route('queue_file', methods=['POST'])
-def queue_file():
-    raise NotImplementedError
+        user_id = Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token'])
+        files = FileDAO.get_all(user_id)
+        strings = []
+        for elem in files:
+            strings.append(elem.as_dict())
+        return jsonify(strings)
+    except Exception as e:
+        return redirect(url_for('user_controller.index', error=e))
 
 
-@user_controller.route('/logout')
-def logout():
-    session.pop('auth_token', None)
-    return redirect(url_for('home_controller.index'))
+@user_controller.before_request
+def before_request():
+    if 'auth_token' in session:
+        try:
+            Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token'])
+        except Exception as e:
+            return redirect(url_for('home_controller.logout', error=e))
+    else:
+        return redirect(url_for('home_controller.index', error='You have to log in first.'))

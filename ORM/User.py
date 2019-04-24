@@ -24,11 +24,8 @@ class User(db.Model):
         self.salt = secrets.token_hex(8)
         self.hashed_password = hashlib.sha3_512(password.encode("utf-8") + self.salt.encode("utf-8")).hexdigest()
         self.home_catalog = hashlib.sha3_256(login.__str__().encode('utf-8')).hexdigest()
-        self.created_on = datetime.now()
-        self.last_login = datetime.now()
+        self.created_on = datetime.now().replace(microsecond=0)
+        self.last_login = datetime.now().replace(microsecond=0)
 
     def __repr__(self):
         return '<User %s>' % self.login
-
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

@@ -22,10 +22,7 @@ class History(db.Model):
     def __init__(self, type_h, description):
         self.type_h = type_h
         self.description = description
-        self.added_on = datetime.now()
+        self.added_on = datetime.now().replace(microsecond=0)
 
     def __repr__(self):
         return '<%s: %s>' % (self.type_h, self.description)
-
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

@@ -8,8 +8,6 @@ from ORM.User import User
 from ORM.File import File
 from ORM.History import History, TypeH
 
-from DAL import data_path
-
 from Utilities.CustomExceptions import UserException, DatabaseException
 
 
@@ -23,10 +21,9 @@ class UserDAO:
                 new_user.history.append(h_log)
                 db.session.add(new_user)
                 db.session.commit()
-                if not os.path.isdir(data_path + new_user.home_catalog):
-                    os.makedirs(data_path + new_user.home_catalog)
-                    os.makedirs(data_path + new_user.home_catalog + '/INPUT')
-                    os.makedirs(data_path + new_user.home_catalog + '/OUTPUT')
+                path = 'static/DATA/' + new_user.home_catalog
+                if not os.path.isdir(path):
+                    os.makedirs(path)
                 return new_user
         except Exception as e:
             db.session.rollback()
@@ -57,11 +54,12 @@ class UserDAO:
             raise UserException('Wrong username or password.')
 
     @staticmethod
-    def update(user, info):
+    def update(user, info=None):
         if user:
             try:
-                h_log = History(type_h=TypeH.Info, description=info)
-                user.history.append(h_log)
+                if info:
+                    h_log = History(type_h=TypeH.Info, description=info)
+                    user.history.append(h_log)
                 db.session.merge(user)
                 db.session.commit()
             except Exception as e:
@@ -73,31 +71,15 @@ class UserDAO:
             raise UserException()
 
     @staticmethod
-    def delete(user):
-        if user:
-            try:
-                db.session.delete(user)
-                db.session.commit()
-                if os.path.isdir(data_path + user.home_catalog):
-                    shutil.rmtree(data_path + user.home_catalog)
-            except Exception as e:
-                db.session.rollback()
-                logging.getLogger('error_logger').exception(e)
-                raise DatabaseException()
-        else:
-            logging.getLogger('logger').warning('Delete operation warning. User not found.')
-            raise UserException()
-
-    @staticmethod
-    def delete_all(users):
+    def delete(users):
         try:
             for user in users:
                 db.session.delete(user)
             db.session.commit()
             for user in users:
-                if os.path.isdir(data_path + user.home_catalog):
-                    shutil.rmtree(data_path + user.home_catalog)
-            return 'All rows dropped.'
+                path = 'static/DATA/' + user.home_catalog
+                if os.path.isdir(path):
+                    shutil.rmtree(path)
         except Exception as e:
             db.session.rollback()
             logging.getLogger('error_logger').exception(e)

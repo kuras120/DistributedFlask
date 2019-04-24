@@ -6,7 +6,6 @@ from ORM import db
 from dotenv import load_dotenv
 
 from DAL.UserDAO import UserDAO
-from DAL.FileDAO import FileDAO
 
 from Controllers.HomeController import home_controller
 from Controllers.UserController import user_controller
@@ -76,7 +75,7 @@ def init_loggers():
 def init_debug():
     try:
         print('Debug data initialization...')
-        print(UserDAO.delete_all(UserDAO.get_all()))
+        UserDAO.delete(UserDAO.get_all())
         # Add users
         UserDAO.create('admin@gmail.com', 'admin1')
         UserDAO.create('user@gmail.com', 'user1')
@@ -84,5 +83,4 @@ def init_debug():
 
         print('Initialization completed.')
     except Exception as e:
-        db.session.rollback()
         print('Error: ' + e.__str__())

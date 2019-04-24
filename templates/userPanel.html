@@ -97,23 +97,4 @@
             <li><h4><a href="#" class="li-options">View Your tasks</a></h4></li>
         </ul>
     </div>
-    <div class="row">
-        <div class="col-12 d-flex align-items-center justify-content-center">
-            <form action="{{ url_for('user_controller.release_zombies') }}" method="POST">
-                <div class="form-group">
-                    <label for="threads">Threads</label>
-                    <input type="text" name="threads" class="form-control" id="threads" placeholder="ex. 4" required>
-                </div>
-                <div class="form-group">
-                    <label for="numbers">Numbers to check</label>
-                    <input type="text" name="numbers" class="form-control" id="numbers" placeholder="ex. 1000" required>
-                </div>
-                <div class="form-group">
-                    <label for="parts">Parts</label>
-                    <input type="text" name="parts" class="form-control" id="parts" placeholder="ex. 4" required>
-                </div>
-                <button type="submit" class="btn btn-secondary">Submit</button>
-            </form>
-        </div>
-    </div>
 {% endblock %}

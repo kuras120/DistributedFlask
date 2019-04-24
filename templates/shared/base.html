@@ -102,7 +102,7 @@
                                 <a class="nav-link" href="{{ url_for('user_controller.index') }}">LOGGED AS {{ user }}</a>
                             </li>
                             <li class="nav-item active">
-                                <a class="nav-link" href="{{ url_for('user_controller.logout')}}">SIGN OUT<span class="sr-only">(current)</span></a>
+                                <a class="nav-link" href="{{ url_for('home_controller.logout')}}">SIGN OUT<span class="sr-only">(current)</span></a>
                             </li>
                         {% else %}
                             <li class="nav-item active">
