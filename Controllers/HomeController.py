@@ -1,41 +1,44 @@
 import datetime
 
+from DAL.UserDAO import UserDAO
+
+from multiprocessing import Value
+
+from Controllers import home_controller
+
+from Utilities.Format import Format
+from Utilities.Authentication import Authentication
+
 from flask import render_template, jsonify, request, session, redirect, url_for, current_app
 
-from Utilities.Authentication import Authentication
-from Controllers import home_controller
-from DAL.UserDAO import UserDAO
-from Utilities.Counter import Counter
-from Utilities.Format import Format
 
-
-# TODO Refactor required https://stackoverflow.com/a/23417696
-likes_counter = Counter(990)
+likes_counter = Value('i', 1200)
 
 
 @home_controller.route('/', defaults={'error': None})
 @home_controller.route('/<error>')
 def index(error):
     current_date = datetime.datetime.now().date().strftime('%B %d, %Y')
-    number = Format.human_format(likes_counter.get())
+    likes = Format.human_format(likes_counter.value)
     current_year = datetime.datetime.now().year.__str__()
     login = None
     if 'auth_token' in session:
         error = None
         try:
-            user_id = Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token'])
-            login = UserDAO.get(user_id).login.split('@')[0]
+            login = UserDAO.get(Authentication.decode_auth_token(current_app.config['SECRET_KEY'],
+                                                                 session['auth_token'])).login.split('@')[0]
         except Exception as e:
             session.pop('auth_token', None)
             return redirect(url_for('home_controller.index', error=e))
 
-    return render_template('index.html', date=current_date, likes=number, year=current_year, user=login, error=error)
+    return render_template('index.html', date=current_date, year=current_year, user=login, likes=likes, error=error)
 
 
 @home_controller.route('/add_like', methods=['POST'])
 def add_like():
-    likes_counter.add(1)
-    number = Format.human_format(likes_counter.get())
+    with likes_counter.get_lock():
+        likes_counter.value += 1
+    number = Format.human_format(likes_counter.value)
     return jsonify(number)
 
 
@@ -60,3 +63,10 @@ def register_process():
             return redirect(url_for('home_controller.index', error=e))
     else:
         return redirect(url_for('home_controller.index', error='Passwords don\'t match.'))
+
+
+@home_controller.route('/logout', defaults={'error': None})
+@home_controller.route('/logout/<error>')
+def logout(error):
+    session.pop('auth_token', None)
+    return redirect(url_for('home_controller.index', error=error))

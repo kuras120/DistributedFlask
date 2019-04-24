@@ -1,13 +1,12 @@
 
 $(document).ready( function() {
-    $('#like-button').click(function() {
+    $('#like-button').click(function () {
         $.ajax({
-            type : 'POST',
-            url : '/add_like'
+            type: 'POST',
+            url: '/add_like'
         })
-        .done(function(data) {
+        .done(function (data) {
             $('#like-button').html(" " + data);
         });
-    });
+    })
 });
-
