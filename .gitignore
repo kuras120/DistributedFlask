@@ -104,6 +104,9 @@ ENV/
 
 \.vscode/
 
-static/DB/
-
+# users data
 static/DATA/
+
+# db files
+*.rdb
+*.db
