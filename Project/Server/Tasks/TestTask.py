@@ -12,7 +12,7 @@ def create_task(task_type):
 def mpi_task(directory, resolution, file, task_name):
     logging.getLogger('logger').info('Processing started')
     data = subprocess.Popen(shlex.split('mpiexec -n 4 ' +
-                                        # '-f MPI/hostfile ' +
+                                        '-f Project/Server/MPI/hostfile ' +
                                         'python Project/Server/MPI/StartScript.py ' + directory + ' ' +
                                         resolution[0].__str__() + ' ' + resolution[1].__str__() + ' ' +
                                         '20 ' + file + ' ' +

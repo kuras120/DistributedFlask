@@ -3,7 +3,7 @@ import redis
 from flask.cli import FlaskGroup
 from rq import Connection, Worker
 
-from Project.Server import create_app
+from Project import create_app
 
 
 app = create_app()

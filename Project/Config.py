@@ -10,7 +10,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class BaseConfig(object):
     """Base configuration."""
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///flask_app.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///Server/flask_app.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = secrets.token_urlsafe(16)
     REDIS_URL = 'redis://redis:6379/0'
