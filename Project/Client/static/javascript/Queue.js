@@ -27,8 +27,9 @@ function getStatus(taskID, refresh) {
             $('#tasks').prepend(html);
         }
 
-        const taskStatus = res.data.task_status;
-        if (taskStatus === 'finished' || taskStatus === 'failed') return false;
+        let taskStatus = res.data.task_status;
+        console.log(taskStatus);
+        if (taskStatus === 'SUCCESS' || taskStatus === 'FAILURE') return false;
         setTimeout(function() {
             getStatus(res.data.task_id, true);
         }, 1000);

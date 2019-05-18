@@ -4,15 +4,16 @@ import logging
 
 from Project.Server.DAL.UserDAO import UserDAO
 
-
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class BaseConfig(object):
     """Base configuration."""
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///flask_app.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///Server/flask_app.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = secrets.token_urlsafe(16)
+    BROKER_URL = 'redis://localhost:6379/0'
+    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
     REDIS_URL = 'redis://redis:6379/0'
     FLASK_ENV = 'production'
     WTF_CSRF_ENABLED = True
@@ -83,3 +84,4 @@ def init_debug():
         print('Initialization completed.')
     except Exception as e:
         print('Error: ' + e.__str__())
+

@@ -3,12 +3,15 @@ import shlex
 import logging
 import subprocess
 
+from Project.Server.Tasks import celery
+
 
 def create_task(task_type):
     time.sleep(int(task_type) * 10)
     return True
 
 
+@celery.task()
 def mpi_task(directory, resolution, file, task_name):
     logging.getLogger('logger').info('Processing started')
     data = subprocess.Popen(shlex.split('mpiexec -n 4 ' +
@@ -33,3 +36,8 @@ def mpi_task(directory, resolution, file, task_name):
     else:
         logging.getLogger('error-logger').error(data.stderr.read().decode('utf-8'))
         return data.returncode
+
+
+@celery.task()
+def celery_task(a, b):
+    return a + b

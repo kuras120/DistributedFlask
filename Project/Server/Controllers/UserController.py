@@ -11,13 +11,14 @@ import urllib.parse
 from flask import Blueprint
 
 from rq import Queue, Connection
+from celery.result import AsyncResult
 
 from werkzeug.utils import secure_filename
 
 from Project.Server.DAL.UserDAO import UserDAO
 from Project.Server.DAL.FileDAO import FileDAO
 
-from Project.Server.Tasks.TestTask import mpi_task
+from Project.Server.Tasks.TestTask import celery, mpi_task, celery_task
 
 from Project.Server.Utilities.Authentication import Authentication
 
@@ -117,13 +118,11 @@ def queue_task():
         file = request.form['fileSelect']
 
         if task_name + '.mp4' not in os.listdir(directory):
-            with Connection(redis.from_url(current_app.config['REDIS_URL'])):
-                q = Queue()
-                task = q.enqueue(mpi_task, directory, resolution, file, task_name)
+            result = mpi_task.delay(directory, resolution, file, task_name)
             response_object = {
                 'status': 'success',
                 'data': {
-                    'task_id': task.get_id()
+                    'task_id': result.task_id
                 }
             }
             return jsonify(response_object), 202
@@ -138,21 +137,33 @@ def queue_task():
 
 @user_controller.route('/task_status/<task_id>', methods=['GET'])
 def get_status(task_id):
-    with Connection(redis.from_url(current_app.config['REDIS_URL'])):
-        q = Queue()
-        task = q.fetch_job(task_id)
+    task = celery.AsyncResult(task_id)
+
     if task:
         response_object = {
             'status': 'success',
             'data': {
-                'task_id': task.get_id(),
-                'task_status': task.get_status(),
+                'task_id': task.task_id,
+                'task_status': task.state,
                 'task_result': task.result,
             }
         }
     else:
         response_object = {'status': 'error'}
     return jsonify(response_object)
+
+
+@user_controller.route('/calculate', methods=['GET'])
+def calculate():
+    directory = request.args.get('directory')
+    resolution1 = request.args.get('resolution1')
+    resolution2 = request.args.get('resolution2')
+    input_t = request.args.get('input')
+    output_t = request.args.get('output')
+
+    result = mpi_task(directory, [resolution1, resolution2], input_t, output_t)
+    result.wait()
+    return jsonify(result.get())
 
 
 @user_controller.before_request
