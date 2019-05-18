@@ -3,12 +3,11 @@ import shutil
 import hashlib
 import logging
 
-from ORM import db
-from ORM.User import User
-from ORM.File import File
-from ORM.History import History, TypeH
+from Project.Server.ORM import db
+from Project.Server.ORM.User import User
+from Project.Server.ORM.History import History, TypeH
 
-from Utilities.CustomExceptions import UserException, DatabaseException
+from Project.Server.Utilities.CustomExceptions import UserException, DatabaseException
 
 
 class UserDAO:
@@ -21,7 +20,7 @@ class UserDAO:
                 new_user.history.append(h_log)
                 db.session.add(new_user)
                 db.session.commit()
-                path = 'static/DATA/' + new_user.home_catalog
+                path = 'Project/Server/DATA/' + new_user.home_catalog
                 if not os.path.isdir(path):
                     os.makedirs(path)
                 return new_user
@@ -77,7 +76,7 @@ class UserDAO:
                 db.session.delete(user)
             db.session.commit()
             for user in users:
-                path = 'static/DATA/' + user.home_catalog
+                path = 'Project/Server/DATA/' + user.home_catalog
                 if os.path.isdir(path):
                     shutil.rmtree(path)
         except Exception as e:

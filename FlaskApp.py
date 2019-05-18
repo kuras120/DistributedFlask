@@ -1,29 +1,24 @@
-import os
-import logging
-import secrets
+import redis
 
-from flask import Flask
+from flask.cli import FlaskGroup
+from rq import Connection, Worker
 
-from Config import init_loggers, init_debug, init_db, bind_blueprints, init_env
+from Project import create_app
 
-app = Flask(__name__)
-init_env()
-app.config['SECRET_KEY'] = secrets.token_urlsafe(16)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_CONNECTION_STRING')
 
-init_loggers()
-logging.getLogger('logger').info('Loggers initialized.')
+app = create_app()
+cli = FlaskGroup(create_app=create_app)
 
-bind_blueprints(app)
-logging.getLogger('logger').info('Blueprints created.')
 
-init_db(app)
-logging.getLogger('logger').info('Db initialized.')
+# TODO Not available for windows (fork command)
+@cli.command('run_worker')
+def run_worker():
+    redis_url = app.config['REDIS_URL']
+    redis_connection = redis.from_url(redis_url)
+    with Connection(redis_connection):
+        worker = Worker(app.config['QUEUES'])
+        worker.work()
 
-if os.getenv('FLASK_ENV') == 'development':
-    init_debug()
-    logging.getLogger('logger').info('Debug mode on')
 
 if __name__ == '__main__':
-    app.run()
+    cli()

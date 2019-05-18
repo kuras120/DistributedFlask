@@ -1,9 +1,6 @@
 import os
 import sys
 import math
-import shlex
-
-import subprocess
 
 from Fabric import Fabric
 
@@ -23,7 +20,7 @@ def is_primal(number):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 6:
+    if len(sys.argv) != 7:
         sys.stdout.write('Invalid number of arguments.')
     else:
         user_input_path = sys.argv[1]
@@ -31,15 +28,14 @@ if __name__ == '__main__':
         y = sys.argv[3]
         r = sys.argv[4]
         zip_arch = os.path.join(user_input_path, sys.argv[5])
+        task_name = os.path.join(user_input_path, sys.argv[6])
 
-        zombies = Fabric(x, y, r)
+        zombies = Fabric(x, y, r, zip_arch, task_name)
 
         try:
-            brains = zombies.work(user_input_path, zip_arch)
-            subprocess.run(shlex.split('ffmpeg -r 4 -i ' + os.path.join(user_input_path, 'test/') +
-                                       '/%d.bmp -c:v libx264 -vf fps=60 -pix_fmt yuv420p '
-                                       + os.path.join(user_input_path, '../OUTPUT') + '/out.mp4'),
-                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            brains = zombies.work(user_input_path)
+            sys.stdout.write(brains.__str__())
             sys.exit(0)
         except Exception as e:
-            sys.exit(e)
+            sys.stderr.write(e.__str__())
+            sys.exit(1)

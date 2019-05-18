@@ -1,12 +1,12 @@
 import os
 import logging
-
-from ORM import db
-from ORM.File import File
-from ORM.History import History, TypeH
-
 from werkzeug.utils import secure_filename
-from Utilities.CustomExceptions import UserException, DatabaseException
+
+from Project.Server.ORM import db
+from Project.Server.ORM.File import File
+from Project.Server.ORM.History import History, TypeH
+
+from Project.Server.Utilities.CustomExceptions import UserException, DatabaseException
 
 
 class FileDAO:
@@ -21,7 +21,7 @@ class FileDAO:
                 user.history.append(h_log)
                 db.session.merge(user)
                 db.session.commit()
-                path = os.path.join('static/DATA/' + user.home_catalog, new_data.name)
+                path = os.path.join('Project/Server/DATA/' + user.home_catalog, new_data.name)
                 if not os.path.isfile(path):
                     file.save(path)
                 return new_data
@@ -72,7 +72,7 @@ class FileDAO:
                 db.session.delete(dt)
             db.session.commit()
             for dt in files:
-                path = os.path.join('static/DATA/' + home_catalog, dt.name)
+                path = os.path.join('Project/Server/DATA/' + home_catalog, dt.name)
                 if os.path.isfile(path):
                     os.remove(path)
         except Exception as e:

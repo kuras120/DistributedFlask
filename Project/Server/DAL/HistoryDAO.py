@@ -1,11 +1,9 @@
 import logging
 
-from ORM import db
-from ORM.User import User
-from ORM.File import File
-from ORM.History import History, TypeH
+from Project.Server.ORM import db
+from Project.Server.ORM.History import History
 
-from Utilities.CustomExceptions import UserException, DatabaseException
+from Project.Server.Utilities.CustomExceptions import DatabaseException
 
 
 class UserDAO:

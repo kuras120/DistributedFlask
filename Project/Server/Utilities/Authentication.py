@@ -2,7 +2,7 @@ import datetime
 import logging
 import jwt
 
-from Utilities.CustomExceptions import UserException
+from Project.Server.Utilities.CustomExceptions import UserException
 
 
 class Authentication:

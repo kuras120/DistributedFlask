@@ -2,7 +2,7 @@ import secrets
 import hashlib
 from datetime import datetime
 
-from ORM import db
+from Project.Server.ORM import db
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String, DateTime
 

@@ -1,6 +1,8 @@
 import enum
-from ORM import db
+
 from datetime import datetime
+
+from Project.Server.ORM import db
 
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Enum
 

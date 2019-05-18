@@ -1,18 +1,18 @@
 import datetime
 
-from DAL.UserDAO import UserDAO
+from flask import Blueprint
 
 from multiprocessing import Value
 
-from Controllers import home_controller
+from Project.Server.DAL.UserDAO import UserDAO
 
-from Utilities.Format import Format
-from Utilities.Authentication import Authentication
+from Project.Server.Utilities.Format import Format
+from Project.Server.Utilities.Authentication import Authentication
 
 from flask import render_template, jsonify, request, session, redirect, url_for, current_app
 
-
 likes_counter = Value('i', 1200)
+home_controller = Blueprint('home_controller', __name__)
 
 
 @home_controller.route('/', defaults={'error': None})
@@ -54,9 +54,9 @@ def login_process():
 
 @home_controller.route('/register_process', methods=['POST'])
 def register_process():
-    if request.form['password'] == request.form['conf_password']:
+    if request.form['passwordRegister'] == request.form['conf_password']:
         try:
-            user = UserDAO.create(request.form['email'], request.form['password'])
+            user = UserDAO.create(request.form['emailRegister'], request.form['passwordRegister'])
             session['auth_token'] = Authentication.encode_auth_token(current_app.config['SECRET_KEY'], user.id)
             return redirect(url_for('user_controller.index'))
         except Exception as e:

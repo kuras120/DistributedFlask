@@ -62,13 +62,13 @@
                     <form action="{{ url_for('home_controller.register_process') }}" method="POST">
                         <div class="modal-body">
                             <div class="form-group">
-                                <label for="email">Email address</label>
-                                <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Email" required>
+                                <label for="emailRegister">Email address</label>
+                                <input type="email" name="emailRegister" class="form-control" id="emailRegister" aria-describedby="emailHelp" placeholder="Email" required>
                                 <small class="form-text text-muted">Your Email will be used as Your login</small>
                             </div>
                             <div class="form-group">
-                                <label for="password">Password</label>
-                                <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+                                <label for="passwordRegister">Password</label>
+                                <input type="password" name="passwordRegister" class="form-control" id="passwordRegister" placeholder="Password" required>
                             </div>
                             <div class="form-group">
                                 <label for="conf_password">Confirm Password</label>
@@ -143,6 +143,7 @@
 
 
         <!-- Optional JavaScript -->
-        <script src="../static/javascript/MainPageFunctions.js"></script>
+        <script src="../../static/javascript/MainPageFunctions.js"></script>
+        <script src="../../static/javascript/Queue.js"></script>
     </body>
 </html>
