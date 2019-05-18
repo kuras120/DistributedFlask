@@ -1,15 +1,9 @@
-import time
 import shlex
 import logging
 import subprocess
 
 
-def create_task(task_type):
-    time.sleep(int(task_type) * 10)
-    return True
-
-
-def mpi_task(directory, resolution, file, task_name):
+def raytracing_task(directory, resolution, file, task_name):
     logging.getLogger('logger').info('Processing started')
     data = subprocess.Popen(shlex.split('mpiexec -n 4 ' +
                                         '-f Project/Server/MPI/hostfile ' +

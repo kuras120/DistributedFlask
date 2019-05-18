@@ -2,10 +2,8 @@ import os
 import ast
 import json
 import redis
-import shlex
 import logging
 import datetime
-import subprocess
 import urllib.parse
 
 from flask import Blueprint
@@ -17,7 +15,7 @@ from werkzeug.utils import secure_filename
 from Project.Server.DAL.UserDAO import UserDAO
 from Project.Server.DAL.FileDAO import FileDAO
 
-from Project.Server.Tasks.TestTask import mpi_task
+from Project.Server.Tasks.MpiTasks import raytracing_task
 
 from Project.Server.Utilities.Authentication import Authentication
 
@@ -37,48 +35,6 @@ def index(error):
         return render_template('userPanel.html', user=login, files=files, year=current_year, error=error)
     except Exception as e:
         return redirect(url_for('home_controller.logout', error=e))
-
-
-@user_controller.route('/release-zombies', methods=['POST'])
-def release_zombies():
-    logging.getLogger('logger').info('Processing started')
-    try:
-        user_id = Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token'])
-        user = UserDAO.get(user_id)
-        directory = os.path.join('Project/Server/DATA', user.home_catalog)
-        task_name = secure_filename(request.form['taskName'])
-        resolution = ast.literal_eval(request.form['resolutionSelect'])
-
-        if task_name + '.mp4' not in os.listdir(directory):
-            data = subprocess.Popen(shlex.split('mpiexec -n 4 ' +
-                                                # '-f MPI/hostfile ' +
-                                                'python Project/Server/MPI/StartScript.py ' + directory + ' ' +
-                                                resolution[0].__str__() + ' ' + resolution[1].__str__() + ' ' +
-                                                '20 ' + request.form['fileSelect'] + ' ' +
-                                                task_name),
-                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-            while True:
-                output = data.stdout.readline().decode('utf-8').strip()
-                if output == '' and data.poll() is not None:
-                    break
-                if output:
-                    logging.getLogger('logger').info(output)
-                    print(output)
-
-            if data.returncode == 0:
-                logging.getLogger('logger').info('Processing completed')
-                return redirect(url_for('user_controller.index'))
-            else:
-                logging.getLogger('error-logger').error(data.stderr.read().decode('utf-8'))
-                return redirect(url_for('user_controller.index',
-                                        error='Unexpected error occurred. Please, contact support'))
-        else:
-            logging.getLogger('logger').warning('Filename already exists.')
-            return redirect(url_for('user_controller.index', error='Filename already exists.'))
-    except Exception as e:
-        logging.getLogger('error_logger').exception(e)
-        return redirect(url_for('user_controller.index', error='Unexpected error occurred. Please, contact support'))
 
 
 @user_controller.route('/add_file', methods=['POST'])
@@ -119,7 +75,7 @@ def queue_task():
         if task_name + '.mp4' not in os.listdir(directory):
             with Connection(redis.from_url(current_app.config['REDIS_URL'])):
                 q = Queue()
-                task = q.enqueue(mpi_task, directory, resolution, file, task_name)
+                task = q.enqueue(raytracing_task, directory, resolution, file, task_name)
             response_object = {
                 'status': 'success',
                 'data': {
