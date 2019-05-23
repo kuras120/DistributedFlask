@@ -21,7 +21,7 @@ def create_app(script_info=None):
     # set config
     app_settings = os.getenv('APP_SETTINGS')
     if not app_settings:
-        app_settings = 'Project.Config.DevelopmentGlobalConfig'
+        app_settings = 'Project.Config.DevelopmentConfig'
     app.config.from_object(app_settings)
 
     init_loggers()

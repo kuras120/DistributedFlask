@@ -6,7 +6,7 @@ import subprocess
 def raytracing_task(directory, resolution, file, task_name):
     logging.getLogger('logger').info('Processing started')
     data = subprocess.Popen(shlex.split('mpiexec -n 4 ' +
-                                        '-f Project/Server/MPI/hostfile ' +
+                                        # '-f Project/Server/MPI/hostfile ' +
                                         'python Project/Server/MPI/StartScript.py ' + directory + ' ' +
                                         resolution[0].__str__() + ' ' + resolution[1].__str__() + ' ' +
                                         '20 ' + file + ' ' +

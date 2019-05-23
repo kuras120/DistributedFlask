@@ -2,10 +2,9 @@ rq
 pyjwt
 flask
 redis
-celery
+dotenv
 mpi4py
 werkzeug
-sqlalchemy
 flask-sqlalchemy
 
 # git
