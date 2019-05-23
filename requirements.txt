@@ -2,7 +2,6 @@ rq
 pyjwt
 flask
 redis
-dotenv
 mpi4py
 werkzeug
 flask-sqlalchemy

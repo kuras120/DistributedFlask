@@ -72,15 +72,13 @@ target/
 
 # pyenv
 .python-version
+.env
 
 # celery beat schedule file
 celerybeat-schedule
 
 # SageMath parsed files
 *.sage.py
-
-# dotenv
-.env
 
 # virtualenv
 .venv
