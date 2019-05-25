@@ -25,5 +25,5 @@ def raytracing_task(directory, resolution, file, task_name):
         logging.getLogger('logger').info('Processing completed')
         return data.returncode
     else:
-        logging.getLogger('error-logger').error(data.stderr.read().decode('utf-8'))
+        logging.getLogger('error_logger').error(data.stderr.read().decode('utf-8'))
         return data.returncode

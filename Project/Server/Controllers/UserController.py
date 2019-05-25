@@ -74,7 +74,7 @@ def queue_task():
 
         if task_name + '.mp4' not in os.listdir(directory):
             with Connection(redis.from_url(current_app.config['REDIS_URL'])):
-                q = Queue()
+                q = Queue(default_timeout=600)
                 task = q.enqueue(raytracing_task, directory, resolution, file, task_name)
             response_object = {
                 'status': 'success',
