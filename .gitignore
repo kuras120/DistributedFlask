@@ -72,15 +72,13 @@ target/
 
 # pyenv
 .python-version
+.env
 
 # celery beat schedule file
 celerybeat-schedule
 
 # SageMath parsed files
 *.sage.py
-
-# dotenv
-.env
 
 # virtualenv
 .venv
@@ -104,4 +102,9 @@ ENV/
 
 \.vscode/
 
-static/DB/
+# users data
+Project/Client/static/DATA/
+
+# db files
+*.rdb
+*.db

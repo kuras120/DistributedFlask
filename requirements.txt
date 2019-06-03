@@ -1,6 +1,11 @@
-Flask==1.0.2
-PyJWT==1.7.1
-SQLAlchemy==1.1.13
-Flask-SQLAlchemy==2.3.2
-python-dotenv==0.10.1
-mpi4py==3.0.1
+rq
+pyjwt
+flask
+redis
+mpi4py
+werkzeug
+flask-sqlalchemy
+
+# git
+# pip
+# git+https://github.com/pyjs/pyjs.git#egg=pyjs
