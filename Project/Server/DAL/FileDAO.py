@@ -11,9 +11,13 @@ from Project.Server.Utilities.CustomExceptions import UserException, DatabaseExc
 
 class FileDAO:
     @staticmethod
-    def create(file, user):
+    def create(file, user, from_path=False):
         try:
-            secure_name = secure_filename(file.filename)
+            if from_path:
+                secure_name = file
+            else:
+                secure_name = secure_filename(file.filename)
+
             if not db.session.query(File).filter(File.name == secure_name, File.user_id == user.id).first():
                 new_data = File(name=secure_name)
                 user.files.append(new_data)
@@ -21,9 +25,10 @@ class FileDAO:
                 user.history.append(h_log)
                 db.session.merge(user)
                 db.session.commit()
-                path = os.path.join('Project/Server/DATA/' + user.home_catalog, new_data.name)
+                path = os.path.join('Project/Client/static/DATA/' + user.home_catalog, new_data.name)
                 if not os.path.isfile(path):
-                    file.save(path)
+                    if not from_path:
+                        file.save(path)
                 return new_data
         except Exception as e:
             db.session.rollback()
@@ -72,7 +77,7 @@ class FileDAO:
                 db.session.delete(dt)
             db.session.commit()
             for dt in files:
-                path = os.path.join('Project/Server/DATA/' + home_catalog, dt.name)
+                path = os.path.join('Project/Client/static/DATA/' + home_catalog, dt.name)
                 if os.path.isfile(path):
                     os.remove(path)
         except Exception as e:

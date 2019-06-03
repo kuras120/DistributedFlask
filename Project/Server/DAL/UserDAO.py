@@ -20,7 +20,7 @@ class UserDAO:
                 new_user.history.append(h_log)
                 db.session.add(new_user)
                 db.session.commit()
-                path = 'Project/Server/DATA/' + new_user.home_catalog
+                path = 'Project/Client/static/DATA/' + new_user.home_catalog
                 if not os.path.isdir(path):
                     os.makedirs(path)
                 return new_user
@@ -76,7 +76,7 @@ class UserDAO:
                 db.session.delete(user)
             db.session.commit()
             for user in users:
-                path = 'Project/Server/DATA/' + user.home_catalog
+                path = 'Project/Client/static/DATA/' + user.home_catalog
                 if os.path.isdir(path):
                     shutil.rmtree(path)
         except Exception as e:

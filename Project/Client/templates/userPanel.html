@@ -50,10 +50,20 @@
                         <select class="custom-select mr-sm-2" id="uploadedFileSelect">
                             <option selected>Choose...</option>
                             {% for file in files %}
-                            <option value={{ loop.index }}>{{ file.name }}</option>
+                                {% if '.mp4' in file.name %}
+                                <option value="/static/DATA/{{ home }}/{{ file.name }}">
+                                    {{ file.name }}
+                                </option>
+                                {% else %}
+                                <option value={{ loop.index }}>{{ file.name }}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>
+                    <video id="player" class="embed-responsive embed-responsive-16by9" width="640" height="480" style="display: none" controls>
+                        <source id="movie" class="embed-responsive-item" src="" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
             </div>
         </div>
@@ -155,7 +165,8 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th style="display: none">ID</th>
+                        <th>Name</th>
                         <th>Status</th>
                         <th>Result</th>
                     </tr>

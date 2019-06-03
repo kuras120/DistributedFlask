@@ -17,7 +17,11 @@ from Project.Server.DAL.FileDAO import FileDAO
 
 from Project.Server.Tasks.MpiTasks import raytracing_task
 
+from rq.registry import StartedJobRegistry, FinishedJobRegistry
+
 from Project.Server.Utilities.Authentication import Authentication
+
+from Project.Server.Utilities.CustomExceptions import UserException
 
 from flask import render_template, session, redirect, url_for, current_app, jsonify, request
 
@@ -30,9 +34,10 @@ def index(error):
     user = UserDAO.get(Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token']))
     try:
         login = user.login.split('@')[0]
+        catalog = user.home_catalog
         files = FileDAO.get_all(user.id)
         current_year = datetime.datetime.now().year.__str__()
-        return render_template('userPanel.html', user=login, files=files, year=current_year, error=error)
+        return render_template('userPanel.html', user=login, home=catalog, files=files, year=current_year, error=error)
     except Exception as e:
         return redirect(url_for('home_controller.logout', error=e))
 
@@ -62,24 +67,33 @@ def delete_files():
         return redirect(url_for('user_controller.index', error=e))
 
 
-@user_controller.route('/queue_task', methods=['GET', 'POST'])
+@user_controller.route('/queue_task', methods=['POST'])
 def queue_task():
     try:
         user_id = Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token'])
         user = UserDAO.get(user_id)
-        directory = os.path.join('Project/Server/DATA', user.home_catalog)
+        directory = os.path.join('Project/Client/static/DATA', user.home_catalog)
         task_name = secure_filename(request.form['taskName'])
         resolution = ast.literal_eval(request.form['resolutionSelect'])
         file = request.form['fileSelect']
 
-        if task_name + '.mp4' not in os.listdir(directory):
+        if not any(x in os.listdir(directory) for x in [task_name, task_name + '.mp4']):
             with Connection(redis.from_url(current_app.config['REDIS_URL'])):
-                q = Queue(default_timeout=600)
-                task = q.enqueue(raytracing_task, directory, resolution, file, task_name)
+                q = Queue(default_timeout=3600)
+                task = q.enqueue(raytracing_task, directory, resolution, file, task_name, result_ttl=86400)
+
+                task.meta['task_name'] = task_name
+                task.meta['file_name'] = file
+                task.meta['token'] = Authentication.decode_auth_token(current_app.config['SECRET_KEY'],
+                                                                      session['auth_token'])
+                task.save_meta()
+
             response_object = {
                 'status': 'success',
                 'data': {
-                    'task_id': task.get_id()
+                    'task_id': task.get_id(),
+                    'task_name': task_name,
+                    'task_file': file
                 }
             }
             return jsonify(response_object), 202
@@ -89,7 +103,7 @@ def queue_task():
 
     except Exception as e:
         logging.getLogger('error_logger').exception(e)
-        return redirect(url_for('user_controller.index', error='Unexpected error occurred. Please, contact support'))
+        return jsonify({'error': e.__str__()}), 500
 
 
 @user_controller.route('/task_status/<task_id>', methods=['GET'])
@@ -106,9 +120,54 @@ def get_status(task_id):
                 'task_result': task.result,
             }
         }
+        if task.result == 0:
+            try:
+                user = UserDAO.get(
+                    Authentication.decode_auth_token(current_app.config['SECRET_KEY'], session['auth_token']))
+                FileDAO.create(task.meta['task_name'] + '.mp4', user, True)
+                response_object.update({'home_catalog': user.home_catalog})
+                return jsonify(response_object), 200
+            except UserException as e:
+                logging.getLogger('logger').warning(e)
+                return jsonify(response_object), 200
+            except Exception as e:
+                return jsonify({'error': e.__str__()}), 500
     else:
         response_object = {'status': 'error'}
     return jsonify(response_object)
+
+
+@user_controller.route('/tasks', methods=['GET'])
+def get_tasks():
+    try:
+        with Connection(redis.from_url(current_app.config['REDIS_URL'])):
+            q = Queue()
+            started = StartedJobRegistry().get_job_ids()
+            finished = FinishedJobRegistry().get_job_ids()
+            jobs = started + q.get_job_ids() + finished
+            print(jobs)
+            objects = []
+            for element in jobs:
+                task = q.fetch_job(element)
+                if task.meta['token'] == Authentication.decode_auth_token(current_app.config['SECRET_KEY'],
+                                                                          session['auth_token']):
+                    if task:
+                        response_object = {
+                            'status': 'success',
+                            'data': {
+                                'task_id': task.get_id(),
+                                'task_status': task.get_status(),
+                                'task_result': task.result,
+                                'task_name': task.meta['task_name'],
+                                'task_file': task.meta['file_name']
+                            }
+                        }
+                    else:
+                        response_object = {'status': 'error'}
+                    objects.append(response_object)
+        return jsonify(objects), 200
+    except Exception as e:
+        return jsonify({'error': e.__str__()}), 500
 
 
 @user_controller.before_request

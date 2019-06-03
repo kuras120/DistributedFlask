@@ -1,5 +1,5 @@
 
-function getStatus(taskID, refresh) {
+function getStatus(taskID, task_name, file_name, refresh) {
     $.ajax({
         url: `/account/task_status/${taskID}`,
         method: 'GET'
@@ -10,7 +10,8 @@ function getStatus(taskID, refresh) {
                 if (res.data.task_id === $(this).text()) {
                     $(this).parent().replaceWith(`
                 <tr>
-                    <td class="task-id">${res.data.task_id}</td>
+                    <td class="task-id" style="display: none">${res.data.task_id}</td>
+                    <td>${task_name} - ${file_name}</td>
                     <td>${res.data.task_status}</td>
                     <td>${res.data.task_result}</td>
                 </tr>`)
@@ -18,19 +19,27 @@ function getStatus(taskID, refresh) {
             });
         }
         else {
-            const html = `
-                <tr>
-                    <td class="task-id">${res.data.task_id}</td>
+            $('#tasks').append(
+                `<tr>
+                    <td class="task-id" style="display: none">${res.data.task_id}</td>
+                    <td>${task_name} - ${file_name}</td>
                     <td>${res.data.task_status}</td>
                     <td>${res.data.task_result}</td>
-                </tr>`;
-            $('#tasks').prepend(html);
+                </tr>`
+            );
         }
 
-        const taskStatus = res.data.task_status;
-        if (taskStatus === 'finished' || taskStatus === 'failed') return false;
+        let taskStatus = res.data.task_status;
+        if (taskStatus === 'finished' || taskStatus === 'failed') {
+            if($(`#uploadedFileSelect option:contains('${task_name}.mp4')`).length === 0) {
+                $('#uploadedFileSelect').append(
+                    `<option value='/static/DATA/${res.home_catalog}/${task_name}.mp4'>${task_name}.mp4</option>`
+                );
+            }
+            return false;
+        }
         setTimeout(function() {
-            getStatus(res.data.task_id, true);
+            getStatus(res.data.task_id, task_name, file_name, true);
         }, 1000);
     })
     .fail((err) => {
@@ -40,20 +49,52 @@ function getStatus(taskID, refresh) {
 
 function queue() {
     $.ajax({
-        url: '/account/queue_task',
-        data: {
-            taskName: $('#taskName').val(),
-            resolutionSelect: $('#resolutionSelect').val(),
-            fileSelect: $('#fileSelect').val()
-        },
-        method: 'POST'
+    url: '/account/queue_task',
+    data: {
+        taskName: $('#taskName').val(),
+        fileSelect: $('#fileSelect').val(),
+        resolutionSelect: $('#resolutionSelect').val()
+    },
+    method: 'POST'
     })
     .done((res) => {
-        getStatus(res.data.task_id, false);
+        console.log(res);
+        getStatus(res.data.task_id, res.data.task_name, res.data.task_file, false)
     })
     .fail((err) => {
-        alert("File already exists.");
-        console.log(err);
+        console.log(err)
     });
 }
 
+$(document).ready(function () {
+    if (window.location.pathname === '/account/') {
+        let player = $('#player');
+
+        $.ajax({
+            url: '/account/tasks',
+            method: 'GET'
+        })
+        .done((res) => {
+            console.log(res);
+            res.forEach(function (value) {
+                console.log(value);
+                getStatus(value.data.task_id, value.data.task_name, value.data.task_file, false)
+            })
+        })
+        .fail((error) => {
+           console.log(error)
+        });
+
+        $('#uploadedFileSelect').on('change', function(e) {
+            player.hide();
+            let option = this.options[e.target.selectedIndex];
+            console.log(option.text);
+            console.log(option.value);
+            if (option.text.indexOf(".mp4") >= 0) {
+                player.find('#movie').attr('src', option.value);
+                player[0].load();
+                player.show();
+            }
+        });
+    }
+});

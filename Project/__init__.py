@@ -1,7 +1,9 @@
 import os
+import redis
 import logging
 from flask import Flask
 
+from rq import Connection
 from Project.Server.ORM import db
 from Project.Config import init_loggers, init_debug
 
@@ -34,6 +36,9 @@ def create_app(script_info=None):
 
     if os.getenv('FLASK_ENV') == 'development':
         init_debug()
+        with Connection(redis.from_url(app.config['REDIS_URL'])):
+            r = redis.Redis()
+            r.flushall()
         logging.getLogger('logger').info('Debug mode on')
 
     # register blueprints
