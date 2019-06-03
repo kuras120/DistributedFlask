@@ -103,7 +103,7 @@ ENV/
 \.vscode/
 
 # users data
-Project/Server/DATA/
+Project/Client/static/DATA/
 
 # db files
 *.rdb
