@@ -1,0 +1,34 @@
+{% extends 'shared/base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+    <div id="banner" class="row d-none d-md-flex">
+        <div class="col-12">
+            <div class="row h-25 align-items-end">
+                <div class="col-md-4 d-flex justify-content-start p-4">
+                    <span class="font-weight-bold" style="color: royalblue;">Today is &nbsp;</span>
+                    <span style="color: cornflowerblue;">{{ date }}</span>
+                </div>
+                <div class="col-md-4 offset-md-4 d-flex justify-content-end p-4 text-center">
+                    <i id="like-button" class="fas fa-heart p-2 m-1"> {{ likes }}</i>
+                    <i class="fab fa-facebook-square fa-2x p-1"></i>
+                    <i class="fab fa-twitter-square fa-2x p-1"></i>
+                </div>
+            </div>
+            <div class="row h-25 align-items-start">
+                <div class="col-md-8 offset-md-2">
+                    <h3 class="d-flex justify-content-center font-weight-bold" style="color: royalblue;">
+                        Welcome in RayTracing animation generator
+                    </h3>
+                    <h6 class="d-flex justify-content-center font-weight-bold" style="color: cornflowerblue;">
+                        Here are the tools which we have used to build this app. Avoid them.
+                    </h6>
+                    <div class="d-flex justify-content-center">
+                        <img class="m-1" src="{{ url_for('static',filename='images/flask_logo.png') }}" alt="Flask">
+                        <img class="m-1" src="{{ url_for('static',filename='images/python_logo.png') }}" alt="Python">
+                        <img class="m-1" src="{{ url_for('static',filename='images/elixir_logo1.png') }}" alt="Elixir">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

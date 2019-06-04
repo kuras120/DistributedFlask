@@ -1,0 +1,11 @@
+rq
+pyjwt
+flask
+redis
+mpi4py
+werkzeug
+flask-sqlalchemy
+
+# git
+# pip
+# git+https://github.com/pyjs/pyjs.git#egg=pyjs
