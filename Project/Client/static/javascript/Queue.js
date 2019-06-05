@@ -46,6 +46,26 @@ function getStatus(taskID, task_name, file_name, refresh) {
         console.log(err)
     });
 }
+function checkForBlank()
+	{
+	
+		if(document.getElementById('taskName').value=="")
+		{
+			alert('podaj nazwe zadania')
+		}
+		else  if(document.getElementById('fileSelect').value=="Choose...")
+			{
+				alert('wybierz plik wejsciowy');
+				return false;
+			}
+
+					else if(document.getElementById('resolutionSelect').value=="Choose...")
+			{
+				alert('wybierz rozdzielczosc');
+				return false;
+			}
+			else queue();
+	}
 
 function queue() {
     $.ajax({
