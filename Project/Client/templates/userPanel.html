@@ -1,12 +1,17 @@
 {% extends 'shared/base.html' %}
 {% block title %}Account{% endblock %}
 {% block content %}
+<style>
+
+</style>
 
     <div class="row h-25 align-items-start">
         <div class="col-md-8 offset-md-2">
-            <h3 class="d-flex justify-content-center font-weight-bold" style="color: white;">
+           <div style="margin-top:40px;">
+            	<h3 class="d-flex justify-content-center font-weight-bold" 	style="color: white;">
                 Hello, {{ user }}
-            </h3>
+            	</h3>
+        	</div>
         </div>
     </div>
 
@@ -14,7 +19,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="fileUploader">Upload sum files</h5>
+                    <h5 class="modal-title" id="fileUploader">Upload files</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
@@ -100,7 +105,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="taskSchedulerTitle">Plan sum tasks</h5>
+                    <h5 class="modal-title" id="taskSchedulerTitle">Plan tasks</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
@@ -144,18 +149,24 @@
                       </div>
                     </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-secondary" onclick="queue()">Submit</button>
+                    <button type="submit" class="btn btn-secondary" onclick="checkForBlank()">Submit</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <div id="sub-menu" class="row">
-        <ul class="col-12 list-inline d-flex align-items-center justify-content-center">
-            <li><h4><a href="#" data-toggle="modal" data-target="#fileUploaderModal" class="li-options">Upload file</a></h4></li>
-            <li><h4><a href="#" data-toggle="modal" data-target="#taskSchedulerModal" class="li-options">Schedule task</a></h4></li>
-            <li><h4><a href="#" data-toggle="modal" data-target="#filesViewerModal" class="li-options">View Your files</a></h4></li>
-            <li><h4><a href="#" data-toggle="modal" data-target="#tasksViewerModal" class="li-options">View Your tasks</a></h4></li>
+<style>
+	.li-options:hover
+	{
+		color: white;
+		transform:scale(1.07,1.07);
+	}
+</style>
+    <div id="sub-menu" class="btn-group btn-group-lg row">
+        <ul class="col-12 list-inline d-flex align-items-center justify-content-center"style="opacity: .7">
+            <button href="#" data-toggle="modal" data-target="#fileUploaderModal" class="btn-lg btn-secondary li-options">Upload file</button>
+            <button href="#" data-toggle="modal" data-target="#taskSchedulerModal" class="btn-lg btn-secondary li-options">Schedule task</button>
+            <button href="#" data-toggle="modal" data-target="#filesViewerModal" class="btn-lg btn-secondary li-options">View Your files</button>
+            <button href="#" data-toggle="modal" data-target="#tasksViewerModal" class="btn-lg btn-secondary li-options">View Your tasks</button>
         </ul>
     </div>
     <div class="row flex-column flex-grow-1 py-2" style="min-height: 100px;">
