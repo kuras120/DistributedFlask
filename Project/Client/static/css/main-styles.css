@@ -87,7 +87,13 @@ body {
 #fileInformation {
     width: 100%;
 }
-
+	.li-options
+	{background-color: black}
+	.li-options:hover
+	{
+		color: white;
+		transform:scale(1.07,1.07);
+	}
 footer {
     color: white;
     background-color: rgb(29, 29, 29);

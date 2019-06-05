@@ -154,13 +154,6 @@
             </div>
         </div>
     </div>
-<style>
-	.li-options:hover
-	{
-		color: white;
-		transform:scale(1.07,1.07);
-	}
-</style>
     <div id="sub-menu" class="btn-group btn-group-lg row">
         <ul class="col-12 list-inline d-flex align-items-center justify-content-center"style="opacity: .7">
             <button href="#" data-toggle="modal" data-target="#fileUploaderModal" class="btn-lg btn-secondary li-options">Upload file</button>
@@ -171,20 +164,21 @@
     </div>
     <div class="row flex-column flex-grow-1 py-2" style="min-height: 100px;">
         <div class="col-12">
-            <h3>Task Status</h3>
             <br>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th style="display: none">ID</th>
-                        <th>Name</th>
-                        <th>Status</th>
-                        <th>Result</th>
-                    </tr>
-                </thead>
-                <tbody id="tasks">
-                </tbody>
-            </table>
+            <br>
+            <br>
+            <table class="table table-dark">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Status</th>
+      <th scope="col">Result</th>
+    </tr>
+  </thead>
+  <tbody id="tasks">
+  </tbody>
+</table>
+      
         </div>
     </div>
 {% endblock %}
