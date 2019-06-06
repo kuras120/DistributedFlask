@@ -108,10 +108,8 @@ $(document).ready(function () {
         $('#uploadedFileSelect').on('change', function(e) {
             player.hide();
             let option = this.options[e.target.selectedIndex];
-            console.log(option.text);
-            console.log(option.value);
             if (option.text.indexOf(".mp4") >= 0) {
-                player.find('#movie').attr('src', option.value);
+                player.find('#movie').attr('src', option.value + '?' + (new Date()).toString());
                 player[0].load();
                 player.show();
             }
