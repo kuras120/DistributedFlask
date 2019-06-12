@@ -6,7 +6,7 @@
         <meta name="viewport"
               content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>{% block title %}{% endblock %} - ¯\_(ツ)_/¯</title>
+        <title>{% block title %}{% endblock %} - Aplikacje internetowe i rozproszone</title>
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
@@ -22,7 +22,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="loginModalTitle">Sing in to ¯\_(ツ)_/¯</h5>
+                        <h5 class="modal-title" id="loginModalTitle">Sing in</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
@@ -54,7 +54,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="registerModalTitle">Sing up to ¯\_(ツ)_/¯</h5>
+                        <h5 class="modal-title" id="registerModalTitle">Sing up</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
@@ -89,9 +89,10 @@
         </div>
         {% endif %}
         <!-- NAVBAR DESKTOP/TABLET -->
-        <nav class="navbar d-none d-md-flex fixed-top navbar-expand-md navbar-light bg-light">
+        <nav class="navbar d-none d-md-flex fixed-top navbar-expand-md navbar-light bg-primary">
             <div class="container-fluid">
-                <a class="navbar-brand" href="{{ url_for('home_controller.index')}}">¯\_(ツ)_/¯</a>
+                <a class="navbar-brand" href="{{ url_for('home_controller.index')}}"> 
+                    <div style="margin-left: 15px;"><img class="m-1" src="{{ url_for('static',filename='images/bored.png') }}"style="height:45px;weight:45px" alt="Home"></div></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -99,10 +100,11 @@
                     <ul class="navbar-nav ml-auto">
                         {% if session['auth_token'] %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('user_controller.index') }}">LOGGED AS {{ user }}</a>
+                                <div style="margin-left: 15px;"></div></a>
+                                <div><a class="nav-link" href="{{ url_for('user_controller.index') }}"><img class="m-1" src="{{ url_for('static',filename='images/user1.png') }}"style="height:45px;weight:45px" alt="User"></a></div>
                             </li>
                             <li class="nav-item active">
-                                <a class="nav-link" href="{{ url_for('home_controller.logout')}}">SIGN OUT<span class="sr-only">(current)</span></a>
+                                <a class="nav-link" href="{{ url_for('home_controller.logout')}}"><img class="m-1" src="{{ url_for('static',filename='images/logout.png') }}"style="height:45px;weight:45px" alt="LogOut"><span class="sr-only">(current)</span></a>
                             </li>
                         {% else %}
                             <li class="nav-item active">
