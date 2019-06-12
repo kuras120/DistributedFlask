@@ -70,7 +70,7 @@ class Fabric:
             raise 'Error in receiving last tasks: ' + e.__str__()
 
         try:
-            subprocess.run(shlex.split('ffmpeg -r 4 -i ' + os.path.splitext(self.zip_arch)[0] +
+            subprocess.run(shlex.split('ffmpeg -r 60 -i ' + os.path.splitext(self.zip_arch)[0] +
                                        '/%d.bmp -c:v libx264 -vf fps=60 -pix_fmt yuv420p ' +
                                        self.task_name + '.mp4'), stdout=subprocess.PIPE)
 
