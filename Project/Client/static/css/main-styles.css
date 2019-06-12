@@ -1,10 +1,13 @@
 body {
     min-height: 100vh;
     padding-top: 80px;
-    background: lightslategrey;
+background: url("../images/background.jpg");
     user-select: none;
 }
-
+#homeButton
+{
+	background: url("../images/bored.png");
+}
 .alert {
     margin: 0 !important;
 }
@@ -33,11 +36,24 @@ body {
 
 /* FIRST IMPRESSION */
 #banner {
-    background: url("../images/city.jpg"), linear-gradient(rgba(123, 140, 160, 1), rgba(123, 140, 160, 1)) repeat-x;
     background-size: 100% 100%;
     height: 500px;
     filter: brightness(100%);
     transition: all 300ms linear;
+}
+#background
+{
+	 background: url("../images/tlo.jpg"), linear-gradient(rgba(123, 140, 160, 1), rgba(123, 140, 160, 1)) repeat-x;
+
+}
+#backgroung img
+{
+ border-radius: 50%;
+    height: 70px;
+    width: 70px;
+    border: 2px solid dodgerblue;
+
+
 }
 
 #banner img {
