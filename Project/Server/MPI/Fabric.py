@@ -33,7 +33,7 @@ class Fabric:
             else:
                 self.create_slave()
         except Exception as e:
-            raise e
+            raise Exception(e)
 
     def create_master(self, queue):
         memory = []
@@ -48,7 +48,7 @@ class Fabric:
                     self.__comm.send([-1, i.__str__() + ' slave was assassinated.\n'], dest=i)
                     self.__size -= 1
             except Exception as e:
-                raise 'Error in sending first tasks: ' + i.__str__() + ' ' + e.__str__()
+                raise Exception('Error in sending first tasks: ' + i.__str__() + ' ' + e.__str__())
 
         while queue:
             try:
@@ -57,7 +57,7 @@ class Fabric:
                 self.__comm.send([resource_mark, queue.pop(0)], dest=self.__status.Get_source())
                 resource_mark += 1
             except Exception as e:
-                raise 'Error in queuing tasks: ' + e.__str__()
+                raise Exception('Error in queuing tasks: ' + e.__str__())
 
         try:
             for i in range(1, self.__size):
@@ -67,7 +67,7 @@ class Fabric:
             for i in range(1, self.__size):
                 self.__comm.send([-1, i.__str__() + ' slave died suddenly.\n'], dest=i)
         except Exception as e:
-            raise 'Error in receiving last tasks: ' + e.__str__()
+            raise Exception('Error in receiving last tasks: ' + e.__str__())
 
         try:
             subprocess.run(shlex.split('ffmpeg -r 60 -i ' + os.path.splitext(self.zip_arch)[0] +
@@ -76,7 +76,7 @@ class Fabric:
 
             shutil.rmtree(os.path.splitext(self.zip_arch)[0])
         except Exception as e:
-            raise 'Cannot convert bmps to mp4: ' + e.__str__()
+            raise Exception('Cannot convert bmps to mp4: ' + e.__str__())
 
         print(self.__rank.__str__() + ' master thanks, that he could serve you. Farewell, my lord.\n')
         return memory
@@ -95,4 +95,4 @@ class Fabric:
 
                     self.__comm.send(data[0], dest=0)
             except Exception as e:
-                raise 'Error in processing task: ' + e.__str__()
+                raise Exception('Error in processing task: ' + e.__str__())
