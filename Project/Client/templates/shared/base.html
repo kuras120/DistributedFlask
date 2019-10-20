@@ -92,26 +92,28 @@
         <nav class="navbar d-none d-md-flex fixed-top navbar-expand-md navbar-light bg-primary">
             <div class="container-fluid">
                 <a class="navbar-brand" href="{{ url_for('home_controller.index')}}"> 
-                    <div style="margin-left: 15px;"><img class="m-1" src="{{ url_for('static',filename='images/bored.png') }}"style="height:45px;weight:45px" alt="Home"></div></a>
+                    <div style="margin-left: 15px;"><img class="m-1" src="{{ url_for('static',filename='images/bored.png') }}" style="height:45px;width:45px" alt="Home"></div></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarText">
                     <ul class="navbar-nav ml-auto">
                         {% if session['auth_token'] %}
-                            <li class="nav-item">
-                                <div style="margin-left: 15px;"></div></a>
-                                <div><a class="nav-link" href="{{ url_for('user_controller.index') }}"><img class="m-1" src="{{ url_for('static',filename='images/user1.png') }}"style="height:45px;weight:45px" alt="User"></a></div>
+                            <li class="nav-item d-flex align-items-center">
+                                <h5>Hi {{ user }}!</h5>
                             </li>
-                            <li class="nav-item active">
-                                <a class="nav-link" href="{{ url_for('home_controller.logout')}}"><img class="m-1" src="{{ url_for('static',filename='images/logout.png') }}"style="height:45px;weight:45px" alt="LogOut"><span class="sr-only">(current)</span></a>
+                            <li class="nav-item">
+                                <div><a class="nav-link" href="{{ url_for('user_controller.index') }}"><img class="m-1" src="{{ url_for('static',filename='images/user1.png') }}" style="height:45px; width:45px" alt="User"></a></div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('home_controller.logout')}}"><img class="m-1" src="{{ url_for('static',filename='images/logout.png') }}" style="height:45px; width:45px" alt="LogOut"></a>
                             </li>
                         {% else %}
-                            <li class="nav-item active">
-                                <a class="nav-link" href="#" data-toggle="modal" data-target="#loginModal"> <span>SIGN IN</span> <span class="sr-only">(current)</span></a>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-toggle="modal" data-target="#loginModal"> <span class="font-weight-bold">SIGN IN</span> </a>
                             </li>
-                            <li class="nav-item active">
-                                <a class="nav-link" href="#" data-toggle="modal" data-target="#registerModal"> <span>SIGN UP</span> <span class="sr-only">(current)</span></a>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-toggle="modal" data-target="#registerModal"> <span class="font-weight-bold">SIGN UP</span> </a>
                             </li>
                         {% endif %}
                     </ul>
@@ -120,9 +122,15 @@
         </nav>
         <!-- NAVBAR MOBILE -->
         <nav class="navbar d-md-none fixed-top navbar-light bg-light">
-            <div id="button-mobile" class="container-fluid d-flex justify-content-center h-100" data-toggle="modal" data-target="#loginModal">
-                <h5>TAP TO START</h5>
-            </div>
+            {% if session['auth_token'] %}
+                <div id="button-mobile" class="container-fluid d-flex justify-content-center h-100">
+                    <h5><span style="color: black;">Hi {{ user }}! </span><a href="{{ url_for('home_controller.logout')}}" style="color: white;"> LOGOUT</a></h5>
+                </div>
+            {% else %}
+                <div id="button-mobile" class="container-fluid d-flex justify-content-center h-100" data-toggle="modal" data-target="#loginModal">
+                    <h5>TAP TO START</h5>
+                </div>
+            {% endif %}
         </nav>
         <!-- CONTENT -->
         <div class="container-fluid d-flex flex-column flex-grow-1">

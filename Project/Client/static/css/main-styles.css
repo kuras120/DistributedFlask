@@ -1,7 +1,8 @@
 body {
     min-height: 100vh;
     padding-top: 80px;
-background: url("../images/background.jpg");
+    background: url("../images/background.jpg") no-repeat center center fixed;
+    background-size: cover;
     user-select: none;
 }
 #homeButton
@@ -43,10 +44,10 @@ background: url("../images/background.jpg");
 }
 #background
 {
-	 background: url("../images/tlo.jpg"), linear-gradient(rgba(123, 140, 160, 1), rgba(123, 140, 160, 1)) repeat-x;
+	 background: url("../images/background.jpg"), linear-gradient(rgba(123, 140, 160, 1), rgba(123, 140, 160, 1)) repeat-x;
 
 }
-#backgroung img
+#background img
 {
  border-radius: 50%;
     height: 70px;
@@ -95,21 +96,21 @@ background: url("../images/background.jpg");
     padding-left: .5rem;
 }
 
-#sub-menu li:not(:first-child) {
-    padding-left: .5rem;
-    border-left: 1px solid #000;
-}
-
 #fileInformation {
     width: 100%;
 }
-	.li-options
-	{background-color: black}
-	.li-options:hover
-	{
-		color: white;
-		transform:scale(1.07,1.07);
-	}
+
+.options {
+    background-color: black;
+    color: white;
+    cursor: pointer;
+}
+
+.options:hover {
+    color: white;
+    transform:scale(1.07,1.07);
+}
+
 footer {
     color: white;
     background-color: rgb(29, 29, 29);
